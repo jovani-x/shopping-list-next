@@ -1,0 +1,54 @@
+.card {
+  @apply rounded-md border border-sky-500 mb-6;
+
+  &Head {
+    @apply rounded-t-md bg-sky-500 text-white py-2 px-4;
+    margin-top: -1px;
+    margin-left: -1px;
+    margin-right: -1px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+
+    h2 {
+      margin: 0;
+      font-size: inherit;
+      flex-grow: 1;
+      flex-shrink: 1;
+    }
+
+    > a,
+    > button {
+      @apply ms-4;
+    }
+
+    > a {
+      color: inherit;
+      flex-grow: 0;
+      flex-shrink: 0;
+    }
+  }
+
+  &Message {
+    @apply py-2 px-4 text-sky-500;
+    width: 100%;
+    display: flex;
+    align-items: center;
+
+    p {
+      @apply my-0;
+    }
+  }
+
+  &Foot {
+    @apply py-4 px-4;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &.isDone {
+    @apply grayscale;
+  }
+}

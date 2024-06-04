@@ -1,0 +1,19 @@
+.checkboxItem {
+  $line-height: 1.5;
+
+  @apply ps-5;
+  position: relative;
+  line-height: $line-height;
+
+  input {
+    @apply -translate-y-1/2;
+    position: absolute;
+    left: 0;
+    top: ($line-height * 0.5em);
+  }
+
+  label {
+    vertical-align: top;
+    line-height: inherit;
+  }
+}

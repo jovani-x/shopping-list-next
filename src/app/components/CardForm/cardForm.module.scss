@@ -1,0 +1,49 @@
+.formGroup {
+  @apply mb-4;
+  flex-grow: 1;
+  flex-shrink: 1;
+  display: flex;
+  flex-direction: column;
+
+  label {
+    align-self: start;
+  }
+}
+
+.group {
+  @apply mt-6 mb-4 py-1 px-4 border border-gray-300 rounded-md;
+  position: relative;
+
+  .btnClose {
+    @apply p-0 bg-white text-red-600 transition duration-500;
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translate(50%, -50%);
+    border-radius: 50%;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase;
+    font-weight: 400;
+    font-size: 1rem;
+    line-height: 1;
+
+    &:hover {
+      @apply border-red-600 bg-red-600 text-white;
+    }
+  }
+}
+
+.btnHolder {
+  @apply mb-8;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.title {
+  @apply text-sky-500;
+}

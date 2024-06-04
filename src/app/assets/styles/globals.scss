@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-white min-h-dvh grid;
+  grid-template-areas: "navbar" "content" "footer";
+  grid-template-rows: auto 1fr auto;
+}
+
+h1 {
+  @apply text-2xl leading-normal mb-4;
+}
+
+.baseContainer {
+  @apply container w-full md:w-96 max-w-full mx-auto;
+}
+
+.contentLayout {
+  @apply grid py-4 px-5 overflow-y-auto;
+  grid-area: content;
+  align-items: flex-start;
+  grid-template-columns: 100%;
+  grid-template-rows: minmax(min-content, min-content);
+}

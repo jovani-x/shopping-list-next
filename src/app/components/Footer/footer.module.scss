@@ -1,0 +1,19 @@
+.bottomBar {
+  @apply py-4 px-5 text-sky-500 bg-gradient-to-br from-indigo-50 to-pink-50 text-center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  grid-area: footer;
+
+  .title {
+    font-weight: inherit;
+
+    a {
+      @apply underline underline-offset-4 decoration-1;
+
+      &:hover {
+        @apply no-underline;
+      }
+    }
+  }
+}

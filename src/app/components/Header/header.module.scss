@@ -1,0 +1,19 @@
+.navbar {
+  @apply py-4 px-5 text-sky-500 bg-gradient-to-br from-indigo-50 to-pink-50;
+  display: flex;
+  align-items: center;
+  grid-area: navbar;
+
+  button {
+    @apply ml-4;
+  }
+
+  .langButton {
+    @apply capitalize;
+  }
+
+  .title {
+    @apply me-auto;
+    font-weight: inherit;
+  }
+}

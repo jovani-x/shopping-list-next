@@ -1,0 +1,9 @@
+.cardFilter {
+  @apply gap-y-1 gap-x-4 pb-4;
+  display: flex;
+  flex-wrap: wrap;
+
+  .title {
+    @apply text-sky-500;
+  }
+}

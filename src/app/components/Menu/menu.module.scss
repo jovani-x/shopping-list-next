@@ -1,0 +1,55 @@
+.menu {
+  @apply bg-gradient-to-br from-indigo-50 to-pink-50 text-sky-500 py-4 px-4;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+
+  > button {
+    order: -1;
+    align-self: center;
+    flex-grow: 0;
+    flex-shrink: 0;
+  }
+
+  ul {
+    @apply m-0 p-0;
+    list-style: none;
+    flex-grow: 1;
+    flex-shrink: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    li {
+      @apply my-2;
+
+      a {
+        @apply text-current transition duration-500;
+
+        &:hover {
+          @apply text-sky-600;
+        }
+      }
+    }
+  }
+
+  .lang {
+    @apply capitalize;
+    flex-direction: row;
+    gap: 0.5rem;
+
+    li {
+      @apply my-0;
+    }
+
+    .active {
+      @apply underline underline-offset-4 decoration-1;
+    }
+  }
+}

@@ -1,0 +1,12 @@
+.confirmationTooltip {
+  @apply bg-white;
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 0.75rem;
+  line-height: 1.2;
+
+  button {
+    @apply ms-2;
+  }
+}

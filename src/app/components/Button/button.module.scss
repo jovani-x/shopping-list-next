@@ -1,0 +1,38 @@
+*,
+a,
+button,
+input {
+  &.button,
+  &.buttonContrast {
+    @apply px-5 py-2 border border-transparent rounded-md bg-sky-500 text-white transition duration-500;
+
+    &:hover:not(:disabled):not([disabled]) {
+      @apply bg-sky-600;
+    }
+
+    &:not(:disabled):not([disabled]) {
+      cursor: pointer;
+    }
+
+    &[disabled],
+    &:disabled {
+      opacity: 0.5;
+    }
+  }
+
+  &.buttonContrast {
+    @apply border-current bg-white text-black;
+
+    &:hover:not(:disabled):not([disabled]) {
+      @apply bg-black text-white;
+    }
+  }
+
+  &.buttonSimple {
+    @apply p-0;
+    background: transparent;
+    color: inherit;
+    border: 0;
+    font: inherit;
+  }
+}

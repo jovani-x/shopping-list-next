@@ -1,0 +1,71 @@
+.productItem {
+  @apply py-2 px-4;
+  width: 100%;
+  display: flex;
+  align-items: center;
+
+  &:nth-child(2n + 1) {
+    @apply bg-gradient-to-r from-white to-sky-50;
+  }
+  &:nth-child(2n) {
+    @apply bg-gradient-to-l from-white to-sky-50;
+  }
+
+  &:last-child {
+    @apply rounded-b-md;
+  }
+
+  .status {
+    @apply me-4;
+    flex-grow: 0;
+    flex-shrink: 0;
+    width: 1.4rem;
+    font-size: 1rem;
+    text-align: center;
+    cursor: pointer;
+  }
+
+  h4 {
+    @apply truncate mt-0 mb-0;
+    flex-grow: 1;
+    flex-shrink: 1;
+    font-weight: inherit;
+    font-size: inherit;
+    line-height: inherit;
+  }
+
+  img {
+    @apply ml-4;
+    flex-grow: 0;
+    flex-shrink: 0;
+    vertical-align: top;
+    width: 1.5em;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+  }
+
+  button {
+    @apply ml-4 p-0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+  }
+}
+
+.productInfo {
+  @apply py-2 px-4;
+
+  &:nth-child(2n + 1) {
+    @apply bg-gradient-to-r from-white to-sky-50;
+  }
+  &:nth-child(2n) {
+    @apply bg-gradient-to-l from-white to-sky-50;
+  }
+
+  &:last-child {
+    @apply rounded-b-md;
+  }
+}

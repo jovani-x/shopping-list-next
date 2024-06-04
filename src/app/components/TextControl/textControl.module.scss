@@ -1,0 +1,30 @@
+.formGroup {
+  @apply mt-4 mb-4;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+
+  > label {
+    &:first-child {
+      $line-height: 1.6;
+
+      @apply truncate bg-white;
+      position: absolute;
+      top: ($line-height * -0.5em);
+      left: 0.6rem;
+      padding-left: 0.25rem;
+      padding-right: 0.25rem;
+      max-width: calc(100% - 0.6rem * 2);
+      font-size: 0.75rem;
+      line-height: $line-height;
+    }
+
+    & + .textControl {
+      margin-top: 0;
+    }
+  }
+}
+
+.textControl {
+  @apply mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-sky-300 focus:ring focus:ring-sky-200 focus:ring-opacity-50 transition duration-500;
+}

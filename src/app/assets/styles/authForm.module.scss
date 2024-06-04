@@ -1,0 +1,16 @@
+.btnHolder {
+  @apply mb-4;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.linkHolder {
+  a {
+    @apply underline underline-offset-4 decoration-1 text-sky-500;
+
+    &:hover {
+      @apply no-underline;
+    }
+  }
+}

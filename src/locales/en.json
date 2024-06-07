@@ -55,5 +55,11 @@
   "itDoesNotWorkNow": "It doesn't work now",
   "userHasBeenSignedOut": "{{userName}} has been signed out",
   "restoreAccess": "Restore access",
-  "pageNotFound": "Page not found"
+  "pageNotFound": "Page not found",
+  "cancel": "Cancel",
+  "share": "Share",
+  "shareCardWith": "Share card {{name}} with",
+  "haveAccess": "Have access",
+  "grantAccess": "Grant access",
+  "noOne": "No one"
 }

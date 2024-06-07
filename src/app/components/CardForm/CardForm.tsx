@@ -146,7 +146,7 @@ const CardForm = ({
   const canSave = isDirty && isValid;
   const onSaveCard = async (data: FormValues) => {
     const formData = {
-      id: card?.id ?? nanoid(),
+      id: card?.id ?? "",
       name: data.cardTitle,
       notes: data.cardNotes,
       products: data.productsList,

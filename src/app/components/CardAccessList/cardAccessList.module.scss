@@ -1,0 +1,13 @@
+.list {
+  &Item {
+    @apply flex justify-between mt-1 mb-2 text-sm;
+  }
+
+  &Name {
+    @apply text-sky-500 font-normal;
+  }
+
+  &Role {
+    @apply lowercase ms-2;
+  }
+}

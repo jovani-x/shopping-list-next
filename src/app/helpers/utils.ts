@@ -1,6 +1,7 @@
 import { type ResponseCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { cookies } from "next/headers";
 import { AuthUser } from "@/app/helpers/types";
+import { defaultLocale } from "@/app/i18n";
 
 export const getCookieTemplateObject = async (
   cookieName: string
@@ -59,3 +60,8 @@ export const decodeToken = async (
 export const getCurrentUser = async (
   encodedToken: string | null
 ): Promise<AuthUser> => await decodeToken(encodedToken);
+
+export const getCurrentLocale = async (): Promise<string> => {
+  const lang = cookies().get("NEXT_LOCALE")?.value || defaultLocale;
+  return lang;
+};

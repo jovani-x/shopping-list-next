@@ -1,22 +1,21 @@
 import Link from "next/link";
 import authFormStyles from "@/app/assets/styles/authForm.module.scss";
 import initTranslations from "@/app/i18n";
+import { getCurrentLocale } from "@/app/helpers/utils";
+import YCenteredBlock from "@/app/components/YCenteredBlock/YCenteredBlock";
 
-export default async function NotFoundPage({
-  params: { locale },
-}: {
-  params: { locale: string };
-}) {
+export default async function NotFoundPage() {
+  const locale = await getCurrentLocale();
   const { t } = await initTranslations(locale);
 
   return (
-    <div className="text-center self-stretch flex flex-col justify-center row-start-2 row-end-auto">
+    <YCenteredBlock>
       <h1>
         <strong>404</strong> - {t("pageNotFound")}
       </h1>
       <p className={authFormStyles.linkHolder}>
         <Link href="/">{t("backToHome")}</Link>
       </p>
-    </div>
+    </YCenteredBlock>
   );
 }

@@ -72,3 +72,14 @@ export type AuthUser = {
   userId: string | null;
   accessToken: string | null;
 };
+
+export enum UserRole {
+  owner = "OWNER",
+  buyer = "BUYER",
+}
+
+export type FriendType = {
+  _id: string;
+  userName: string;
+  cards: [{ cardId: string; role: UserRole }];
+};

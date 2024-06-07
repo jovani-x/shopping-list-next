@@ -55,5 +55,11 @@
   "itDoesNotWorkNow": "To nie działa teraz",
   "userHasBeenSignedOut": "Użytkownik {{userName}} został wylogowany",
   "restoreAccess": "Odzyskać dostęp",
-  "pageNotFound": "Nie znaleziono strony"
+  "pageNotFound": "Nie znaleziono strony",
+  "cancel": "Odwołać",
+  "share": "Udostępnić",
+  "shareCardWith": "Udostępnić kartkę {{name}}",
+  "haveAccess": "Mają dostęp",
+  "grantAccess": "Udzielić dostępu",
+  "noOne": "Nikt"
 }

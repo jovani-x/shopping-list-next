@@ -5,12 +5,14 @@ const Checkbox = ({
   text,
   onChange,
   checked,
+  checkId,
 }: {
   text: string;
   onChange: Function;
   checked: boolean;
+  checkId?: string;
 }) => {
-  const id = text;
+  const id = checkId ?? text;
   const [isChecked, setIsChecked] = useState(checked);
 
   useEffect(() => onChange(isChecked), [isChecked]);

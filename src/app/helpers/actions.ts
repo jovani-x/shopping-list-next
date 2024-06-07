@@ -17,6 +17,7 @@ import { ICard } from "@/app/components/Card/Card";
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { defaultLocale } from "@/app/i18n";
+import { FriendType, UserRole } from "@/app/helpers/types";
 
 const refreshPagesCache = (pathNames: string[]) => {
   const origin = headers().get("origin");
@@ -219,8 +220,9 @@ export const createCard = async (cardValues: ICard) => {
     };
   }
 
+  const { id, ...cardObj } = validatedFields.data;
   const reqData = {
-    card: validatedFields.data,
+    card: cardObj,
   };
 
   const API_URL = await getApiURL();
@@ -254,8 +256,9 @@ export const updateCard = async (cardValues: ICard) => {
     };
   }
 
+  const { id, ...cardObj } = validatedFields.data;
   const reqData = {
-    card: validatedFields.data,
+    card: cardObj,
   };
   const API_URL = await getApiURL();
   const res = await fetch(`${API_URL}/api/cards/${cardValues.id}`, {
@@ -299,6 +302,38 @@ export const removeCard = async (cardId: string) => {
   return data;
 };
 
+export const addToUser = async ({
+  cardId,
+  userId,
+  role,
+}: {
+  cardId: string;
+  userId: string;
+  role: UserRole;
+}) => {
+  const API_URL = await getApiURL();
+  const res = await fetch(`${API_URL}/api/cards/${cardId}/addToUser`, {
+    method: "POST",
+    body: JSON.stringify({
+      targetUserId: userId,
+      targetUserRole: role,
+    }),
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json",
+      Cookie: `${await getAuthCookie()}${await setRequestCurrentLang()}`,
+    },
+  });
+
+  if (!res.ok) {
+    console.log("Add Card To User: Failed to fetch data");
+    return null;
+  }
+
+  const data = JSON.parse(await res.text());
+  return data;
+};
+
 export const changeLanguage = async (curLocale: string) => {
   cookies().set("NEXT_LOCALE", curLocale);
 };
@@ -307,3 +342,29 @@ export const setRequestCurrentLang = async (): Promise<string> => {
   const lang = cookies().get("NEXT_LOCALE")?.value || defaultLocale;
   return `NEXT_LOCALE=${lang}; Secure; HttpOnly; SameSite=Strict;`;
 };
+
+export const getAllFriends = async (): Promise<FriendType[] | null> => {
+  const API_URL = await getApiURL();
+  const res = await fetch(`${API_URL}/api/users`, {
+    method: "GET",
+    cache: "no-cache",
+    headers: {
+      Cookie: `${await getAuthCookie()}${await setRequestCurrentLang()}`,
+    },
+  });
+
+  if (!res.ok) {
+    console.log("getAllFriends: Failed to fetch data");
+    return null;
+  }
+
+  const data = JSON.parse(await res.text());
+  return data;
+};
+
+// export const getFriend = async () => {};
+// export const inviteFriend = async () => {};
+// export const becomeFriend = async () => {};
+// export const deleteFriend = async () => {};
+// export const approveFriendship = async () => {};
+// export const declineFriendship = async () => {};

@@ -18,8 +18,15 @@ export const FormRegisterSchema = z
     path: ["confirmPassword"],
   });
 
-export const FormForgetSchema = z.object({
+const EmailScheme = z.object({
   email: z.string().min(6).email(),
+});
+
+export const FormForgetSchema = EmailScheme;
+
+export const FormInviteSchema = z.object({
+  email: z.string().min(6).email(),
+  message: z.string(),
 });
 
 let ZProduct: z.ZodType<Product>;

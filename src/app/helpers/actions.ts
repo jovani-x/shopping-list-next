@@ -6,6 +6,7 @@ import {
   FormRegisterSchema,
   FormForgetSchema,
   CardSchema,
+  FormInviteSchema,
 } from "./schemas";
 import {
   getApiURL,
@@ -17,7 +18,7 @@ import { ICard } from "@/app/components/Card/Card";
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { defaultLocale } from "@/app/i18n";
-import { FriendType, UserRole } from "@/app/helpers/types";
+import { FriendType, UserRole, UserRequest } from "@/app/helpers/types";
 
 const refreshPagesCache = (pathNames: string[]) => {
   const origin = headers().get("origin");
@@ -362,9 +363,144 @@ export const getAllFriends = async (): Promise<FriendType[] | null> => {
   return data;
 };
 
-// export const getFriend = async () => {};
-// export const inviteFriend = async () => {};
-// export const becomeFriend = async () => {};
-// export const deleteFriend = async () => {};
-// export const approveFriendship = async () => {};
-// export const declineFriendship = async () => {};
+export const inviteFriendViaEmail = async (formData: FormData) => {
+  const rawFormData = Object.fromEntries(formData.entries());
+  const validatedFields = FormInviteSchema.safeParse(rawFormData);
+
+  if (!validatedFields.success) {
+    const errors = validatedFields.error.flatten().fieldErrors;
+    return {
+      errors: errors,
+      message: `Failed to invite friend.`,
+    };
+  }
+
+  const { email, message } = validatedFields.data;
+  const API_URL = await getApiURL();
+  const res = await fetch(`${API_URL}/api/users/invite`, {
+    method: "POST",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json",
+      Cookie: `${await getAuthCookie()}${await setRequestCurrentLang()}`,
+    },
+    body: JSON.stringify({
+      userEmail: email,
+      messageText: message,
+    }),
+  });
+
+  // if (!res.ok) {}
+
+  return await res.json();
+};
+
+export const getUserRequests = async ({ type }: { type?: UserRequest }) => {
+  const API_URL = await getApiURL();
+  const reqType = type ?? "";
+  const res = await fetch(
+    `${API_URL}/api/users/requests/${reqType
+      .toLocaleLowerCase()
+      .replace(/ /g, "-")}`,
+    {
+      method: "GET",
+      cache: "no-cache",
+      headers: {
+        Cookie: `${await getAuthCookie()}${await setRequestCurrentLang()}`,
+      },
+    }
+  );
+
+  if (!res.ok) {
+    console.log("getUserRequests: Failed to fetch data");
+    return null;
+  }
+
+  const data = JSON.parse(await res.text());
+  return data?.requests;
+};
+
+export const deleteFriend = async ({ friendId }: { friendId: string }) => {
+  const API_URL = await getApiURL();
+  const res = await fetch(`${API_URL}/api/users/${friendId}/friendship`, {
+    method: "DELETE",
+    cache: "no-cache",
+    headers: {
+      Cookie: `${await getAuthCookie()}${await setRequestCurrentLang()}`,
+    },
+  });
+
+  if (!res.ok) {
+    console.log("deleteFriend: Failed to fetch data");
+    return null;
+  }
+
+  const data = JSON.parse(await res.text());
+  refreshPagesCache(["/friends"]);
+  return data /*.user*/;
+};
+
+export const deleteFriends = async ({ friendIds }: { friendIds: string[] }) => {
+  const API_URL = await getApiURL();
+  console.log(`friendIds: ${friendIds}`);
+  const res = await fetch(`${API_URL}/api/users/few/friendship`, {
+    method: "DELETE",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json",
+      Cookie: `${await getAuthCookie()}${await setRequestCurrentLang()}`,
+    },
+    body: JSON.stringify({
+      friendIds: friendIds,
+    }),
+  });
+
+  if (!res.ok) {
+    console.log("deleteFriends: Failed to fetch data");
+    return null;
+  }
+
+  const data = JSON.parse(await res.text());
+  refreshPagesCache(["/friends"]);
+  return data /*.users*/;
+};
+
+export const approveFriendship = async ({ userId }: { userId: string }) => {
+  const API_URL = await getApiURL();
+  const res = await fetch(`${API_URL}/api/users/${userId}/friendship/request`, {
+    method: "PUT",
+    cache: "no-cache",
+    headers: {
+      Cookie: `${await getAuthCookie()}${await setRequestCurrentLang()}`,
+    },
+  });
+
+  if (!res.ok) {
+    console.log("approveFriendship: Failed to fetch data");
+    return null;
+  }
+
+  const data = JSON.parse(await res.text());
+  refreshPagesCache(["/friends"]);
+  return data;
+};
+
+export const declineFriendship = async ({ userId }: { userId: string }) => {
+  const API_URL = await getApiURL();
+  const res = await fetch(`${API_URL}/api/users/${userId}/friendship/request`, {
+    method: "DELETE",
+    cache: "no-cache",
+    headers: {
+      Cookie: `${await getAuthCookie()}${await setRequestCurrentLang()}`,
+    },
+  });
+
+  if (!res.ok) {
+    console.log("declineFriendship: Failed to fetch data");
+    return null;
+  }
+
+  const data = JSON.parse(await res.text());
+  refreshPagesCache(["/friends"]);
+  return data;
+};

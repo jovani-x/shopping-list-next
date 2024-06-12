@@ -83,3 +83,17 @@ export type FriendType = {
   userName: string;
   cards: [{ cardId: string; role: UserRole }];
 };
+
+export enum UserRequest {
+  becomeFriend = "BECOME FRIEND",
+}
+
+export interface IRequest {
+  id: string;
+  name: UserRequest;
+  text: string;
+  from: {
+    id: string;
+    userName: string;
+  };
+}

@@ -1,0 +1,16 @@
+.item {
+  @apply my-2 pb-2 border-b;
+
+  .head {
+    @apply flex items-center;
+
+    p {
+      @apply grow shrink text-sky-500;
+    }
+
+    a,
+    button {
+      @apply ms-2;
+    }
+  }
+}

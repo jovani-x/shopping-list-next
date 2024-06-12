@@ -61,5 +61,12 @@
   "shareCardWith": "Udostępnić kartkę {{name}}",
   "haveAccess": "Mają dostęp",
   "grantAccess": "Udzielić dostępu",
-  "noOne": "Nikt"
+  "noOne": "Nikt",
+  "friendship": "Przyjaźń",
+  "yourFriends": "Twoi przyjaciele",
+  "newFriendshipRequests": "Nowe prośby o przyjaźń",
+  "inviteFriend": "Zaprosić przyjaciela (-ółkę)",
+  "invite": "Zaprosić",
+  "message": "Wiadomość",
+  "deleteSelected": "Usuń wybrane"
 }

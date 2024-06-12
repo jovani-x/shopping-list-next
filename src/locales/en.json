@@ -61,5 +61,12 @@
   "shareCardWith": "Share card {{name}} with",
   "haveAccess": "Have access",
   "grantAccess": "Grant access",
-  "noOne": "No one"
+  "noOne": "No one",
+  "friendship": "Friendship",
+  "yourFriends": "Your friends",
+  "newFriendshipRequests": "New friendship requests",
+  "inviteFriend": "Invite friend",
+  "invite": "Invite",
+  "message": "Message",
+  "deleteSelected": "Delete Selected"
 }

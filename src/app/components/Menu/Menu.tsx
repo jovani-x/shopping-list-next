@@ -65,6 +65,9 @@ const Menu = () => {
         <Link href="/create-card">{t("createCard")}</Link>
       </li>
       <li>
+        <Link href="/friends">{t("yourFriends")}</Link>
+      </li>
+      <li>
         <Link
           href="/"
           onClick={(e) => {

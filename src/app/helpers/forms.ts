@@ -61,3 +61,17 @@ export const emailProps = (): TextControlProps => {
     fieldState: () => {},
   };
 };
+
+export const messageProps = (): TextControlProps => {
+  const { t } = useTranslation();
+
+  return {
+    label: t("message"),
+    id: "message",
+    type: TextControlTypes.TEXTAREA,
+    placeholder: t("yourMessage"),
+    required: false,
+    name: "message",
+    fieldState: () => {},
+  };
+};

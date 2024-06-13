@@ -1,5 +1,11 @@
 .item {
-  @apply my-2 pb-2 border-b;
+  &:not(:first-child) {
+    @apply mt-2;
+  }
+
+  &:not(:last-child) {
+    @apply mb-2 pb-2 border-b;
+  }
 
   .head {
     @apply flex items-center;

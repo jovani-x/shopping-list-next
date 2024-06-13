@@ -2,7 +2,7 @@ import initTranslations from "@/app/i18n";
 import FriendRequestList from "@/app/components/FriendRequestList/FriendRequestList";
 import InviteFriend from "@/app/components/InviteFriend/InviteFriend";
 import FriendList from "@/app/components/FriendList/FriendList";
-import Title from "@/app/components/Title/Title";
+import Panel from "@/app/components/Panel/Panel";
 import { getAllFriends, getUserRequests } from "@/app/helpers/actions";
 import { UserRequest } from "@/app/helpers/types";
 
@@ -19,18 +19,14 @@ export default async function FriendsPage({
     <>
       <h1>{t("friendship")}</h1>
       <div className={`baseContainer`}>
-        <section className={`mb-6`}>
-          <Title>
-            <h2>{t("newFriendshipRequests")}</h2>
-          </Title>
-          <FriendRequestList requests={requests} />
-        </section>
-        <section className={`mb-6`}>
-          <Title>
-            <h2>{t("yourFriends")}</h2>
-          </Title>
-          <FriendList friends={friends} />
-        </section>
+        <Panel
+          headContent={<h2>{t("newFriendshipRequests")}</h2>}
+          bodyContent={<FriendRequestList requests={requests} />}
+        />
+        <Panel
+          headContent={<h2>{t("yourFriends")}</h2>}
+          bodyContent={<FriendList friends={friends} />}
+        />
         <InviteFriend />
       </div>
     </>

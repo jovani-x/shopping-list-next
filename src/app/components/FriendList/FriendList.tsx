@@ -4,12 +4,11 @@ import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import Checkbox from "@/app/components/Checkbox/Checkbox";
-import { ButtonSimple, ButtonTypes } from "@/app/components/Button/Button";
+import { ButtonContrast, ButtonTypes } from "@/app/components/Button/Button";
 import { deleteFriends, deleteFriend } from "@/app/helpers/actions";
 import { FriendType } from "@/app/helpers/types";
 import { getErrorMessage } from "@/lib/utils";
 import ErrorMessage from "@/app/components/ErrorMessage/ErrorMessage";
-import authFormStyles from "@/app/assets/styles/authForm.module.scss";
 
 type SelectedType = {
   [key: string]: boolean;
@@ -61,30 +60,34 @@ const FriendList = ({ friends }: { friends: FriendType[] | null }) => {
   };
 
   const renderedList =
-    !friends || !friends.length
-      ? null
-      : friends.map((fr) => {
-          return (
-            <Checkbox
-              key={fr._id}
-              text={fr.userName}
-              checked={defaultChecked}
-              onChange={(_isChecked: boolean) => {}}
-              checkId={fr._id}
-              control={control}
-              extraClassname={"mb-1"}
-            />
-          );
-        });
+    !friends || !friends.length ? (
+      <p>{t("noOne")}</p>
+    ) : (
+      friends.map((fr) => {
+        return (
+          <Checkbox
+            key={fr._id}
+            text={fr.userName}
+            checked={defaultChecked}
+            onChange={(_isChecked: boolean) => {}}
+            checkId={fr._id}
+            control={control}
+            extraClassname={"mb-1"}
+          />
+        );
+      })
+    );
 
   return (
     <form action={formAction}>
       {renderedList}
-      <div className={authFormStyles.btnHolder}>
-        <ButtonSimple type={ButtonTypes.SUBMIT} disabled={!canSave}>
-          {`${t("deleteSelected")} ❌`}
-        </ButtonSimple>
-      </div>
+      {!!friends?.length && (
+        <div className={"mt-3 mb-2"}>
+          <ButtonContrast type={ButtonTypes.SUBMIT} disabled={!canSave}>
+            {`${t("deleteSelected")} ❌`}
+          </ButtonContrast>
+        </div>
+      )}
       {error && <ErrorMessage text={error} />}
     </form>
   );

@@ -14,6 +14,7 @@ import {
   addToUser,
 } from "@/app/helpers/actions";
 import { getErrorMessage } from "@/lib/utils";
+import Panel from "@/app/components/Panel/Panel";
 import Share from "@/app/components/Share/Share";
 import Modal from "@/app/components/Modal/Modal";
 import FriendsChoiceForm from "@/app/components/FriendsChoiceForm/FriendsChoiceForm";
@@ -118,87 +119,104 @@ const Card = ({ card }: { card: ICard }) => {
     FriendType[] | null
   >(null);
 
+  const headContent = () => (
+    <>
+      <h2>{card.name}</h2>
+      {card.userRole === UserRole.owner && (
+        <>
+          <Share
+            onClick={async () => {
+              const allFriends = await getAllFriends();
+              const frWithoutAccess: FriendType[] | null = [];
+              const frWithAccess: FriendType[] | null = [];
+
+              allFriends?.map((fr) => {
+                if (fr?.cards.find((c) => c.cardId === card.id)) {
+                  frWithAccess.push({ ...fr });
+                } else {
+                  frWithoutAccess.push({ ...fr });
+                }
+              });
+              setFriendsWithAccess([...frWithAccess]);
+              setFriendsWithoutAccess([...frWithoutAccess]);
+              setIsModalOpen(true);
+            }}
+          />
+          <Link href={`${card.id}/edit-card`}>📝</Link>
+        </>
+      )}
+      {isChanged && (
+        <ButtonSimple
+          children={"💾"}
+          onClick={async () => {
+            try {
+              const resp = await updateCard(cardValues);
+              setIsChanged(false);
+              console.log(`Card '${cardValues.name}' is updated`, resp);
+            } catch (err) {
+              console.log("Saving Card failed", getErrorMessage(err));
+            }
+          }}
+        />
+      )}
+      <ButtonSimple
+        children={"❌"}
+        onClick={() => setIsTooltipShown(!isTooltipShown)}
+      />
+      {isTooltipShown && (
+        <Confirmation
+          extraClassname={"mt-1 me-11 py-2 px-3 rounded-md text-red-600"}
+          text={t("deleteTheCard?")}
+          yesText={t("yes")}
+          noText={t("no")}
+          yesFunc={async () => {
+            try {
+              const resp = await removeCard(card.id);
+              console.log(`Card '${card.name}' is deleted`, resp);
+            } catch (err) {
+              console.log("Removing failed", getErrorMessage(err));
+            } finally {
+              setIsTooltipShown(false);
+            }
+          }}
+          noFunc={() => setIsTooltipShown(false)}
+        />
+      )}
+    </>
+  );
+
+  const bodyContent = () => (
+    <>
+      {renderedList}
+      {card.notes && (
+        <div className={`${cardStyles.cardMessage} whitespace-pre-line`}>
+          {card.notes}
+        </div>
+      )}
+    </>
+  );
+
+  const footContent = () =>
+    !isDone && (
+      <>
+        <footer className={cardStyles.cardFoot}>
+          <Button
+            children={`${t("done")}?`}
+            onClick={() => setAllProductsDone()}
+          />
+        </footer>
+      </>
+    );
+
   return (
     <>
-      <div className={`${cardStyles.card} ${isDone ? cardStyles.isDone : ""}`}>
-        <header className={cardStyles.cardHead}>
-          <h2>{card.name}</h2>
-          {card.userRole === UserRole.owner && (
-            <>
-              <Share
-                onClick={async () => {
-                  const allFriends = await getAllFriends();
-                  const frWithoutAccess: FriendType[] | null = [];
-                  const frWithAccess: FriendType[] | null = [];
-
-                  allFriends?.map((fr) => {
-                    if (fr?.cards.find((c) => c.cardId === card.id)) {
-                      frWithAccess.push({ ...fr });
-                    } else {
-                      frWithoutAccess.push({ ...fr });
-                    }
-                  });
-                  setFriendsWithAccess([...frWithAccess]);
-                  setFriendsWithoutAccess([...frWithoutAccess]);
-                  setIsModalOpen(true);
-                }}
-              />
-              <Link href={`${card.id}/edit-card`}>📝</Link>
-            </>
-          )}
-          {isChanged && (
-            <ButtonSimple
-              children={"💾"}
-              onClick={async () => {
-                try {
-                  const resp = await updateCard(cardValues);
-                  setIsChanged(false);
-                  console.log(`Card '${cardValues.name}' is updated`, resp);
-                } catch (err) {
-                  console.log("Saving Card failed", getErrorMessage(err));
-                }
-              }}
-            />
-          )}
-          <ButtonSimple
-            children={"❌"}
-            onClick={() => setIsTooltipShown(!isTooltipShown)}
-          />
-          {isTooltipShown && (
-            <Confirmation
-              extraClassname={"mt-1 me-11 py-2 px-3 rounded-md text-red-600"}
-              text={t("deleteTheCard?")}
-              yesText={t("yes")}
-              noText={t("no")}
-              yesFunc={async () => {
-                try {
-                  const resp = await removeCard(card.id);
-                  console.log(`Card '${card.name}' is deleted`, resp);
-                } catch (err) {
-                  console.log("Removing failed", getErrorMessage(err));
-                } finally {
-                  setIsTooltipShown(false);
-                }
-              }}
-              noFunc={() => setIsTooltipShown(false)}
-            />
-          )}
-        </header>
-        {renderedList}
-        {card.notes && (
-          <div className={`${cardStyles.cardMessage} whitespace-pre-line`}>
-            {card.notes}
-          </div>
-        )}
-        {!isDone && (
-          <footer className={cardStyles.cardFoot}>
-            <Button
-              children={`${t("done")}?`}
-              onClick={() => setAllProductsDone()}
-            />
-          </footer>
-        )}
-      </div>
+      <Panel
+        headContent={headContent()}
+        bodyContent={bodyContent()}
+        footContent={footContent()}
+        bodyWithOffset={false}
+        extraClassname={isDone ? cardStyles.isDone : ""}
+      />
       <Modal
         isOpen={isModalOpen}
         setOpened={setIsModalOpen}

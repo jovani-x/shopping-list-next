@@ -1,36 +1,23 @@
 .modal {
-  @apply bg-white rounded-md p-4 w-96 max-w-full;
+  @apply bg-transparent w-96 max-w-full;
 
   &::backdrop {
     @apply bg-gradient-to-br from-indigo-50 to-pink-50;
   }
 
-  .head {
-    @apply rounded-t-md bg-sky-500 text-white py-2 px-4 -mt-4 -ms-4 -me-4 mb-4;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    h3 {
-      font-size: inherit;
-      flex-grow: 1;
-      flex-shrink: 1;
-    }
-
-    > a,
-    > button {
-      @apply ms-4;
-    }
-
-    *:first-child:not(h3) {
-      margin-left: auto;
+  &[open] {
+    &,
+    &::backdrop {
+      animation: scaleFromZero 0.3s ease-in forwards;
     }
   }
+}
 
-  .foot {
-    @apply py-4 px-4 -ms-4 -me-4 -mb-4;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+@keyframes scaleFromZero {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
   }
 }

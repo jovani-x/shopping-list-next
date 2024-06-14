@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import modalStyles from "./modal.module.scss";
 import { ButtonSimple } from "@/app/components/Button/Button";
+import Panel from "@/app/components/Panel/Panel";
 
 const Modal = ({
   children,
@@ -67,6 +68,13 @@ const Modal = ({
     }
   }, [isOpen]);
 
+  const headContent = () => (
+    <>
+      {title && <h3>{title}</h3>}
+      <ButtonSimple onClick={handleClose}>❌</ButtonSimple>
+    </>
+  );
+
   return containerEl ? (
     <>
       {createPortal(
@@ -76,11 +84,7 @@ const Modal = ({
           className={modalStyles.modal}
           onClick={handleOutsideClick}
         >
-          <div className={modalStyles.head}>
-            {title && <h3>{title}</h3>}
-            <ButtonSimple onClick={handleClose}>❌</ButtonSimple>
-          </div>
-          {children}
+          <Panel headContent={headContent()} bodyContent={children} />
         </dialog>,
         containerEl
       )}

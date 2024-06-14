@@ -15,7 +15,7 @@ const Panel = ({
   bodyWithOffset?: boolean;
 }) => {
   return (
-    <div className={`${panelStyles.panel} ${extraClassname}`}>
+    <div className={`${panelStyles.panel} ${extraClassname ?? ""}`}>
       {headContent && (
         <header className={panelStyles.panelHead}>{headContent}</header>
       )}

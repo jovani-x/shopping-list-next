@@ -8,6 +8,12 @@ body {
   grid-template-rows: auto 1fr auto;
 }
 
+p {
+  &:not(:last-child) {
+    @apply mb-3;
+  }
+}
+
 h1 {
   @apply text-2xl leading-normal mb-4;
 }

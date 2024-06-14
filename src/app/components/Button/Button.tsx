@@ -1,4 +1,5 @@
 import buttonStyles from "./button.module.scss";
+import Link from "next/link";
 
 export enum ButtonTypes {
   BUTTON = "button",
@@ -12,62 +13,63 @@ export interface IButton {
   type?: ButtonTypes;
   disabled?: boolean;
   extraClassname?: string;
+  href?: string;
 }
 
-const Button = ({
-  children,
-  onClick,
-  type,
-  disabled,
-  extraClassname,
-}: IButton) => {
+const ButtonBase = (btnProps: IButton) => {
+  const {
+    children,
+    type = ButtonTypes.BUTTON,
+    href,
+    extraClassname,
+    ...restProps
+  } = btnProps;
+
+  if (!!href) {
+    return (
+      <Link {...restProps} href={href} className={extraClassname}>
+        {children}
+      </Link>
+    );
+  }
+
   return (
-    <button
-      className={`${buttonStyles.button} ${extraClassname}`}
-      type={type || ButtonTypes.BUTTON}
-      onClick={onClick}
-      disabled={disabled}
-    >
+    <button {...restProps} type={type} className={extraClassname}>
       {children}
     </button>
   );
 };
 
-export const ButtonContrast = ({
-  children,
-  onClick,
-  type,
-  disabled,
-  extraClassname,
-}: IButton) => {
+const Button = (btnProps: IButton) => {
+  const { extraClassname, ...restProps } = btnProps;
+
   return (
-    <button
-      className={`${buttonStyles.buttonContrast} ${extraClassname}`}
-      type={type || ButtonTypes.BUTTON}
-      onClick={onClick}
-      disabled={disabled}
-    >
-      {children}
-    </button>
+    <ButtonBase
+      {...restProps}
+      extraClassname={`${buttonStyles.button} ${extraClassname ?? ""}`}
+    />
   );
 };
 
-export const ButtonSimple = ({
-  children,
-  onClick,
-  type,
-  disabled,
-  extraClassname,
-}: IButton) => {
+export const ButtonContrast = (btnProps: IButton) => {
+  const { extraClassname, ...restProps } = btnProps;
+
   return (
-    <button
-      className={`${buttonStyles.buttonSimple} ${extraClassname}`}
-      type={type || ButtonTypes.BUTTON}
-      onClick={onClick}
-      disabled={disabled}
-    >
-      {children}
-    </button>
+    <ButtonBase
+      {...restProps}
+      extraClassname={`${buttonStyles.buttonContrast} ${extraClassname ?? ""}`}
+    />
+  );
+};
+
+export const ButtonSimple = (btnProps: IButton) => {
+  const { extraClassname, ...restProps } = btnProps;
+
+  return (
+    <ButtonBase
+      {...restProps}
+      extraClassname={`${buttonStyles.buttonSimple} ${extraClassname ?? ""}`}
+    />
   );
 };
 

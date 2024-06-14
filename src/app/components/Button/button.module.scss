@@ -5,6 +5,8 @@ input {
   &.button,
   &.buttonSimple,
   &.buttonContrast {
+    @apply inline-flex items-center;
+
     &:not(:disabled):not([disabled]) {
       cursor: pointer;
     }

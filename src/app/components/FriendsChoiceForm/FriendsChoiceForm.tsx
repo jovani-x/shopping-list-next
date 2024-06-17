@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import modalStyles from "@/app/components/Modal/modal.module.scss";
+import authStyles from "@/app/assets/styles/authForm.module.scss";
 import Button, {
   ButtonContrast,
   ButtonTypes,
@@ -46,7 +46,7 @@ const FriendsChoiceForm = ({
   const canSave = isDirty && isValid;
   const optionsList = !friends
     ? []
-    : friends.map((fr) => ({ value: fr._id, label: fr.userName }));
+    : friends.map((fr) => ({ value: fr.id, label: fr.userName }));
 
   const controlItemUserProps: SelectControlProps = {
     label: `${t("user")}*`,
@@ -72,7 +72,7 @@ const FriendsChoiceForm = ({
   return (
     <form action={formAction}>
       <SelectControl controlProps={controlItemUserProps} register={register} />
-      <div className={`${modalStyles.foot}`}>
+      <div className={`${authStyles.btnHolder}`}>
         <Button
           type={ButtonTypes.SUBMIT}
           children={confirmBtnText}

@@ -79,7 +79,7 @@ export enum UserRole {
 }
 
 export type FriendType = {
-  _id: string;
+  id: string;
   userName: string;
   cards: [{ cardId: string; role: UserRole }];
 };

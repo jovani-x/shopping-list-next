@@ -19,7 +19,7 @@ const CardAccessList = ({
       </li>
     ) : (
       users?.map((user) => (
-        <li key={user._id} className={listStyles.listItem}>
+        <li key={user.id} className={listStyles.listItem}>
           <strong className={listStyles.listName}>{user.userName}</strong>
           <span className={listStyles.listRole}>
             {user.cards.find((c) => c.cardId === cardId)?.role}

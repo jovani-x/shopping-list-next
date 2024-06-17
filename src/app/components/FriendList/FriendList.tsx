@@ -21,7 +21,7 @@ const FriendList = ({ friends }: { friends: FriendType[] | null }) => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    friends?.map((fr) => (defaultValues[String(fr._id)] = defaultChecked));
+    friends?.map((fr) => (defaultValues[String(fr.id)] = defaultChecked));
     reset(defaultValues);
   }, [friends]);
 
@@ -66,11 +66,11 @@ const FriendList = ({ friends }: { friends: FriendType[] | null }) => {
       friends.map((fr) => {
         return (
           <Checkbox
-            key={fr._id}
+            key={fr.id}
             text={fr.userName}
             checked={defaultChecked}
             onChange={(_isChecked: boolean) => {}}
-            checkId={fr._id}
+            checkId={fr.id}
             control={control}
             extraClassname={"mb-1"}
           />

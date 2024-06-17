@@ -18,8 +18,8 @@ export default async function CardPage({
 
   return (
     <>
-      <h1>{`${t("card")}: ${card.name}`}</h1>
       <div className="baseContainer">
+        <h1>{`${t("card")}: ${card.name}`}</h1>
         <Card card={card} />
       </div>
     </>

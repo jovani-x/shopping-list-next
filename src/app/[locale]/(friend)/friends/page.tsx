@@ -17,8 +17,8 @@ export default async function FriendsPage({
 
   return (
     <>
-      <h1>{t("friendship")}</h1>
       <div className={`baseContainer`}>
+        <h1>{t("friendship")}</h1>
         <Panel
           headContent={<h2>{t("newFriendshipRequests")}</h2>}
           bodyContent={<FriendRequestList requests={requests} />}

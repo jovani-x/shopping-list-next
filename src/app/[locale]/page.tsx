@@ -1,6 +1,8 @@
 import { getAllCards } from "@/app/helpers/actions";
 import Cards from "@/app/components/Cards/Cards";
+import Button from "@/app/components/Button/Button";
 import initTranslations from "@/app/i18n";
+import authStyles from "@/app/assets/styles/authForm.module.scss";
 
 export default async function HomePage({
   params: { locale },
@@ -12,9 +14,12 @@ export default async function HomePage({
 
   return (
     <>
-      <h1>{t("home")}</h1>
       <div className={`baseContainer`}>
+        <h1>{t("home")}</h1>
         <Cards cards={cards} />
+        <div className={authStyles.btnHolder}>
+          <Button href="/create-card">{t("createCard")}</Button>
+        </div>
       </div>
     </>
   );

@@ -20,7 +20,7 @@ import { revalidatePath } from "next/cache";
 import { defaultLocale } from "@/app/i18n";
 import { FriendType, UserRole, UserRequest } from "@/app/helpers/types";
 
-const refreshPagesCache = (pathNames: string[]) => {
+export const refreshPagesCache = (pathNames: string[]) => {
   const origin = headers().get("origin");
   pathNames.map((pathname) => revalidatePath(`${origin}${pathname}`));
 };
@@ -51,6 +51,7 @@ export const authenticate = async (formData: FormData) => {
   const authCookie = getResCookies.filter(
     (c) => c.indexOf(`${tokenName}=`) === 0
   );
+
   if (authCookie.length) {
     const cookiesArray = authCookie[0].split(";");
     const cookieOpts = await getCookieTemplateObject(tokenName);
@@ -74,10 +75,20 @@ export const authenticate = async (formData: FormData) => {
           Object.assign(cookieOpts, { secure: value !== "false" });
           break;
         default:
-          Object.assign(cookieOpts, { [name]: value });
+          const nameStr = `${name[0].toLowerCase()}${name.substring(1)}`;
+          Object.assign(cookieOpts, { [nameStr]: value });
       }
     });
-    cookies().set(cookieOpts);
+
+    const getRestCookieProps = (cookieOpts: any) => {
+      const { name, value, ...cookieProps } = cookieOpts;
+      return cookieProps;
+    };
+    cookies().set(
+      cookieOpts.name,
+      cookieOpts.value,
+      getRestCookieProps(cookieOpts)
+    );
   }
 
   return await res.json();
@@ -243,7 +254,7 @@ export const createCard = async (cardValues: ICard) => {
   }
 
   const data = JSON.parse(await res.text());
-  refreshPagesCache(["/", `/${data.card.id}`]);
+  // refreshPagesCache(["/", `/${data.card.id}`]);
   return data;
 };
 
@@ -278,7 +289,7 @@ export const updateCard = async (cardValues: ICard) => {
   }
 
   const data = JSON.parse(await res.text());
-  refreshPagesCache(["/", `/${data.card.id}`]);
+  // refreshPagesCache(["/", `/${data.card.id}`]);
   return data;
 };
 
@@ -313,7 +324,7 @@ export const addToUser = async ({
   role: UserRole;
 }) => {
   const API_URL = await getApiURL();
-  const res = await fetch(`${API_URL}/api/cards/${cardId}/addToUser`, {
+  const res = await fetch(`${API_URL}/api/cards/${cardId}/share`, {
     method: "POST",
     body: JSON.stringify({
       targetUserId: userId,
@@ -328,6 +339,38 @@ export const addToUser = async ({
 
   if (!res.ok) {
     console.log("Add Card To User: Failed to fetch data");
+    return null;
+  }
+
+  const data = JSON.parse(await res.text());
+  return data;
+};
+
+export const removeFromUser = async ({
+  cardId,
+  userId,
+  role,
+}: {
+  cardId: string;
+  userId: string;
+  role: UserRole;
+}) => {
+  const API_URL = await getApiURL();
+  const res = await fetch(`${API_URL}/api/cards/${cardId}/share`, {
+    method: "DELETE",
+    body: JSON.stringify({
+      targetUserId: userId,
+      targetUserRole: role,
+    }),
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json",
+      Cookie: `${await getAuthCookie()}${await setRequestCurrentLang()}`,
+    },
+  });
+
+  if (!res.ok) {
+    console.log("Remove Card From User: Failed to fetch data");
     return null;
   }
 
@@ -461,7 +504,7 @@ export const deleteFriends = async ({ friendIds }: { friendIds: string[] }) => {
   }
 
   const data = JSON.parse(await res.text());
-  refreshPagesCache(["/friends"]);
+  // refreshPagesCache(["/friends"]);
   return data /*.users*/;
 };
 

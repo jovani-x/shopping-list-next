@@ -68,5 +68,7 @@
   "inviteFriend": "Zaprosić przyjaciela (-ółkę)",
   "invite": "Zaprosić",
   "message": "Wiadomość",
-  "deleteSelected": "Usuń wybrane"
+  "deleteSelected": "Usuń wybrane",
+  "isEditing": "redaguje",
+  "isShopping": "robi zakupy"
 }

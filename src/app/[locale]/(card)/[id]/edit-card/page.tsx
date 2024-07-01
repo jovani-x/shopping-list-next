@@ -1,14 +1,13 @@
-"use server";
-
 import initTranslations from "@/app/i18n";
 import CardForm from "@/app/components/CardForm/CardForm";
-import ButtonBack from "@/app/components/ButtonBack/ButtonBack";
-import { ButtonComponentsType } from "@/app/components/Button/Button";
 import { getCard, updateCard } from "@/app/helpers/actions";
-import { UserRole } from "@/app/helpers/types";
+import { UserRole, CardEditingStatus } from "@/app/helpers/types";
 import YCenteredBlock from "@/app/components/YCenteredBlock/YCenteredBlock";
 import Link from "next/link";
 import authFormStyles from "@/app/assets/styles/authForm.module.scss";
+import { getAuthToken, getCurrentUser } from "@/app/helpers/utils";
+import EditingStatus from "@/app/components/EditingStatus/EditingStatus";
+import CardStatusSetter from "@/app/components/CardStatusSetter/CardStatusSetter";
 
 export default async function EditCardPage({
   params: { locale, id },
@@ -34,7 +33,9 @@ export default async function EditCardPage({
     );
   }
 
-  if (card.userRole !== UserRole.owner) {
+  const isOwner = card.userRole !== UserRole.owner;
+
+  if (isOwner) {
     return (
       <YCenteredBlock>
         <h1>{t("unauthorizedRequest")}</h1>
@@ -43,10 +44,30 @@ export default async function EditCardPage({
     );
   }
 
+  const user = await getCurrentUser(await getAuthToken());
+  const userName = user?.userName ?? "";
+  const isSameUser =
+    !!card.status.userName && card.status.userName === userName;
+  const inProcess = card.status?.value === CardEditingStatus.IN_PROCESS;
+  const isBeingEdited = card.status.value === CardEditingStatus.EDITING;
+
+  if (inProcess || (isBeingEdited && !isSameUser)) {
+    return (
+      <YCenteredBlock>
+        <EditingStatus status={card.status} />
+        {renderedBtn}
+      </YCenteredBlock>
+    );
+  }
+
   const renderedBtnBack = (
-    <ButtonBack
-      btnComponentName={ButtonComponentsType.SIMPLE}
+    <CardStatusSetter
+      card={card}
       children={`< ${t("back")}`}
+      status={{
+        value: CardEditingStatus.FREE,
+        userName: "",
+      }}
     />
   );
 

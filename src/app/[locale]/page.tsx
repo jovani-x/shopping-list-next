@@ -16,7 +16,7 @@ export default async function HomePage({
     <>
       <div className={`baseContainer`}>
         <h1>{t("home")}</h1>
-        <Cards cards={cards} />
+        <Cards cardsProps={cards} />
         <div className={authStyles.btnHolder}>
           <Button href="/create-card">{t("createCard")}</Button>
         </div>

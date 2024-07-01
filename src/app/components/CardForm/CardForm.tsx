@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import cardFormStyles from "./cardForm.module.scss";
 import Button, {
   ButtonContrast,
@@ -22,6 +22,7 @@ import Confirmation from "@/app/components/Confirmation/Confirmation";
 import { useTranslation } from "react-i18next";
 import { ICard } from "@/app/components/Card/Card";
 import { getErrorMessage } from "@/lib/utils";
+import { refreshPagesCache } from "@/app/helpers/actions";
 
 const CardForm = ({
   mutationFunc,
@@ -151,6 +152,10 @@ const CardForm = ({
       notes: data.cardNotes,
       products: data.productsList,
       isDone: data?.isDone || false,
+      status: {
+        value: "free",
+        userName: "",
+      },
     };
 
     try {
@@ -186,6 +191,10 @@ const CardForm = ({
     setValue("cardNotes", card?.notes ?? "");
     setValue("productsList", card?.products ?? []);
   }, [card]);
+
+  useEffect(() => {
+    return () => refreshPagesCache(["/", `/${card?.id}`]);
+  }, []);
 
   const formAction = async () => {
     const data = getValues();

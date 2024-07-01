@@ -12,8 +12,10 @@ export default async function FriendsPage({
   params: { locale: string };
 }) {
   const { t } = await initTranslations(locale);
-  const friends = await getAllFriends();
-  const requests = await getUserRequests({ type: UserRequest.becomeFriend });
+  const [friends, requests] = await Promise.all([
+    getAllFriends(),
+    getUserRequests({ type: UserRequest.becomeFriend }),
+  ]);
 
   return (
     <>
@@ -25,7 +27,7 @@ export default async function FriendsPage({
         />
         <Panel
           headContent={<h2>{t("yourFriends")}</h2>}
-          bodyContent={<FriendList friends={friends} />}
+          bodyContent={<FriendList friendsProps={friends} />}
         />
         <InviteFriend />
       </div>

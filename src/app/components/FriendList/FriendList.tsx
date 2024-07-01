@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import Checkbox from "@/app/components/Checkbox/Checkbox";
@@ -9,21 +9,38 @@ import { deleteFriends, deleteFriend } from "@/app/helpers/actions";
 import { FriendType } from "@/app/helpers/types";
 import { getErrorMessage } from "@/lib/utils";
 import ErrorMessage from "@/app/components/ErrorMessage/ErrorMessage";
+import { initStreamListener } from "@/app/helpers/utils-client";
 
 type SelectedType = {
   [key: string]: boolean;
 };
 
-const FriendList = ({ friends }: { friends: FriendType[] | null }) => {
+const FriendList = ({
+  friendsProps,
+}: {
+  friendsProps: FriendType[] | null;
+}) => {
   const { t } = useTranslation();
   const defaultChecked = false;
   const defaultValues = {} as SelectedType;
   const [error, setError] = useState("");
+  const [friends, setFriends] = useState(friendsProps);
+  const refEvSource = useRef<EventSource | null>(null);
+
+  useEffect(
+    initStreamListener.bind(null, {
+      refEvSource,
+      setData: setFriends,
+      dataName: "friends",
+      eventName: "usersupdate",
+    }),
+    []
+  );
 
   useEffect(() => {
     friends?.map((fr) => (defaultValues[String(fr.id)] = defaultChecked));
     reset(defaultValues);
-  }, [friends]);
+  }, [friendsProps]);
 
   const {
     reset,

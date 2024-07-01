@@ -2,9 +2,8 @@
 
 import cardStyles from "./card.module.scss";
 import ProductItem, { Product } from "@/app/components/ProductItem/ProductItem";
-import Link from "next/link";
 import Button, { ButtonSimple } from "@/app/components/Button/Button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Confirmation from "@/app/components/Confirmation/Confirmation";
 import { useTranslation } from "react-i18next";
 import {
@@ -19,7 +18,15 @@ import Share from "@/app/components/Share/Share";
 import Modal from "@/app/components/Modal/Modal";
 import FriendsChoiceForm from "@/app/components/FriendsChoiceForm/FriendsChoiceForm";
 import CardAccessList from "@/app/components/CardAccessList/CardAccessList";
-import { FriendType, UserRole } from "@/app/helpers/types";
+import {
+  FriendType,
+  UserRole,
+  CardEditingStatus,
+  EditingStatusType,
+} from "@/app/helpers/types";
+import { useUserContext } from "@/app/components/ProvideUserContext/ProvideUserContext";
+import EditingStatus from "@/app/components/EditingStatus/EditingStatus";
+import { useRouter } from "next/navigation";
 
 /**
  * @property {string} id
@@ -27,6 +34,8 @@ import { FriendType, UserRole } from "@/app/helpers/types";
  * @property {string} notes (optional)
  * @property {Product[]} products (optional)
  * @property {boolean} isDone
+ * @property {UserRole} userRole
+ * @property {EditingStatusType} status (optional)
  */
 export interface ICard {
   id: string;
@@ -35,6 +44,7 @@ export interface ICard {
   products?: Product[];
   isDone: boolean;
   userRole?: UserRole;
+  status?: EditingStatusType;
 }
 
 export const hasCardType = (card: any): card is ICard => {
@@ -60,6 +70,7 @@ const Card = ({ card }: { card: ICard }) => {
     isEveryProductDone(cardValues?.products)
   );
   const { t } = useTranslation();
+  const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const updateProduct = (newProduct: Product) => {
@@ -95,6 +106,24 @@ const Card = ({ card }: { card: ICard }) => {
     setIsChanged(true);
   };
 
+  const user = useUserContext();
+  const userName = user?.userName ?? "";
+  const isFreeForActions =
+    card.status?.value === CardEditingStatus.FREE ||
+    card.status?.value === undefined;
+  const inProcess = card.status?.value === CardEditingStatus.IN_PROCESS;
+  const isBeingEdited = card.status?.value === CardEditingStatus.EDITING;
+  const isSameUser =
+    !!card.status?.userName && card.status.userName === userName;
+  const isOwner = card.userRole === UserRole.owner;
+  const isShareAllowed = isOwner;
+  const isEditAllowed =
+    isOwner && (isFreeForActions || (isBeingEdited && isSameUser));
+  const isShoppingAllowed =
+    !isDone && (isFreeForActions || (inProcess && isSameUser));
+  const isSaveAllowed = isChanged && inProcess && isSameUser;
+  const isDeleteAllowed = isOwner && isFreeForActions;
+
   const renderedList =
     cardValues.products && cardValues.products.length > 0 ? (
       cardValues.products.map((product: Product) => {
@@ -103,6 +132,7 @@ const Card = ({ card }: { card: ICard }) => {
             key={product.id}
             product={product}
             updateProduct={updateProduct}
+            canBeChecked={inProcess && isSameUser}
           />
         );
       })
@@ -122,35 +152,68 @@ const Card = ({ card }: { card: ICard }) => {
   const headContent = () => (
     <>
       <h2>{card.name}</h2>
-      {card.userRole === UserRole.owner && (
-        <>
-          <Share
-            onClick={async () => {
-              const allFriends = await getAllFriends();
-              const frWithoutAccess: FriendType[] | null = [];
-              const frWithAccess: FriendType[] | null = [];
+      {isShareAllowed && (
+        <Share
+          onClick={async () => {
+            const allFriends = await getAllFriends();
+            const frWithoutAccess: FriendType[] | null = [];
+            const frWithAccess: FriendType[] | null = [];
 
-              allFriends?.map((fr) => {
-                if (fr?.cards.find((c) => c.cardId === card.id)) {
-                  frWithAccess.push({ ...fr });
-                } else {
-                  frWithoutAccess.push({ ...fr });
-                }
-              });
-              setFriendsWithAccess([...frWithAccess]);
-              setFriendsWithoutAccess([...frWithoutAccess]);
-              setIsModalOpen(true);
-            }}
-          />
-          <Link href={`${card.id}/edit-card`}>📝</Link>
-        </>
+            allFriends?.map((fr) => {
+              if (fr?.cards.find((c) => c.cardId === card.id)) {
+                frWithAccess.push({ ...fr });
+              } else {
+                frWithoutAccess.push({ ...fr });
+              }
+            });
+            setFriendsWithAccess([...frWithAccess]);
+            setFriendsWithoutAccess([...frWithoutAccess]);
+            setIsModalOpen(true);
+          }}
+        />
       )}
-      {isChanged && (
+      {isEditAllowed && (
+        <ButtonSimple
+          onClick={async () => {
+            try {
+              await updateCard({
+                ...card,
+                status: { value: CardEditingStatus.EDITING, userName },
+              });
+              router.push(`${card.id}/edit-card`);
+            } catch (err) {
+              console.log("Go editing Card failed", getErrorMessage(err));
+            }
+          }}
+        >
+          📝
+        </ButtonSimple>
+      )}
+      {isShoppingAllowed && (
+        <ButtonSimple
+          onClick={async () => {
+            try {
+              const status = !inProcess
+                ? { value: CardEditingStatus.IN_PROCESS, userName }
+                : { value: CardEditingStatus.FREE, userName: "" };
+              await updateCard({ ...card, status });
+            } catch (err) {
+              console.log("Saving Card failed", getErrorMessage(err));
+            }
+          }}
+        >
+          {"🛒"}
+        </ButtonSimple>
+      )}
+      {isSaveAllowed && (
         <ButtonSimple
           children={"💾"}
           onClick={async () => {
             try {
-              const resp = await updateCard(cardValues);
+              const resp = await updateCard({
+                ...cardValues,
+                status: { value: CardEditingStatus.FREE, userName: "" },
+              });
               setIsChanged(false);
               console.log(`Card '${cardValues.name}' is updated`, resp);
             } catch (err) {
@@ -159,11 +222,13 @@ const Card = ({ card }: { card: ICard }) => {
           }}
         />
       )}
-      <ButtonSimple
-        children={"❌"}
-        onClick={() => setIsTooltipShown(!isTooltipShown)}
-      />
-      {isTooltipShown && (
+      {isDeleteAllowed && (
+        <ButtonSimple
+          children={"❌"}
+          onClick={() => setIsTooltipShown(!isTooltipShown)}
+        />
+      )}
+      {isDeleteAllowed && isTooltipShown && (
         <Confirmation
           extraClassname={"mt-1 me-11 py-2 px-3 rounded-md text-red-600"}
           text={t("deleteTheCard?")}
@@ -187,6 +252,7 @@ const Card = ({ card }: { card: ICard }) => {
 
   const bodyContent = () => (
     <>
+      {card?.status && <EditingStatus status={card.status} />}
       {renderedList}
       {card.notes && (
         <div className={`${cardStyles.cardMessage} whitespace-pre-line`}>
@@ -197,7 +263,9 @@ const Card = ({ card }: { card: ICard }) => {
   );
 
   const footContent = () =>
-    !isDone && (
+    !isDone &&
+    inProcess &&
+    isSameUser && (
       <>
         <footer className={cardStyles.cardFoot}>
           <Button
@@ -207,6 +275,11 @@ const Card = ({ card }: { card: ICard }) => {
         </footer>
       </>
     );
+
+  useEffect(() => {
+    setCardValues(card);
+    setIsDone(isEveryProductDone(card?.products));
+  }, [card]);
 
   return (
     <>

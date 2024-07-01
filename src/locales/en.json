@@ -68,5 +68,7 @@
   "inviteFriend": "Invite friend",
   "invite": "Invite",
   "message": "Message",
-  "deleteSelected": "Delete Selected"
+  "deleteSelected": "Delete Selected",
+  "isEditing": "is editing",
+  "isShopping": "is shopping"
 }

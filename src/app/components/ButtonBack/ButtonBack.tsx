@@ -6,10 +6,10 @@ import {
   ButtonComponents,
   ButtonComponentsType,
 } from "@/app/components/Button/Button";
-import React from "react";
 
 export interface IButtonBack extends IButton {
   btnComponentName: ButtonComponentsType;
+  callback?: () => any;
 }
 
 const ButtonBack = ({
@@ -18,6 +18,8 @@ const ButtonBack = ({
   type,
   disabled,
   extraClassname,
+  callback,
+  onClick,
 }: IButtonBack) => {
   const router = useRouter();
   const TagName = ButtonComponents[btnComponentName];
@@ -28,9 +30,16 @@ const ButtonBack = ({
       children={children}
       disabled={disabled}
       extraClassname={extraClassname}
-      onClick={() => {
-        router.back();
-      }}
+      onClick={
+        !onClick
+          ? () => {
+              if (callback) {
+                callback();
+              }
+              router.back();
+            }
+          : onClick
+      }
     />
   );
 };

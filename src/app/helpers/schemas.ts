@@ -46,4 +46,10 @@ export const CardSchema = z.object({
   notes: z.string().or(z.null()),
   products: z.optional(z.array(ProductScheme)),
   isDone: z.boolean(),
+  status: z.optional(
+    z.object({
+      value: z.string(),
+      userName: z.optional(z.string().or(z.undefined())),
+    })
+  ),
 });

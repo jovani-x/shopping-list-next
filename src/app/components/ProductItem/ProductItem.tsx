@@ -21,9 +21,11 @@ export interface Product {
 const ProductItem = ({
   product,
   updateProduct,
+  canBeChecked = false,
 }: {
   product: Product;
   updateProduct: Function;
+  canBeChecked?: boolean;
 }) => {
   const [collapsed, setCollapsed] = useState(true);
   const hasNote = product.note && product.note.length > 0;
@@ -32,8 +34,14 @@ const ProductItem = ({
     <>
       <div key={product.id} className={productItemStyles.productItem}>
         <span
-          className={productItemStyles.status}
-          onClick={() => updateProduct({ ...product, got: !product.got })}
+          className={`${productItemStyles.status} ${
+            canBeChecked ? productItemStyles.editable : ""
+          }`}
+          onClick={() => {
+            if (canBeChecked) {
+              updateProduct({ ...product, got: !product.got });
+            }
+          }}
         >
           {product.got ? "✅" : "👉"}
         </span>

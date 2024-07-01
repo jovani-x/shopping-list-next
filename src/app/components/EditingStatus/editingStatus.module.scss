@@ -1,0 +1,11 @@
+.editingStatus {
+  @apply bg-sky-200 text-white text-xs py-1 px-4 flex items-center;
+
+  &.editing {
+    @apply bg-red-600;
+  }
+
+  &.inProcess {
+    @apply bg-green-500;
+  }
+}

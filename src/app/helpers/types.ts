@@ -1,3 +1,14 @@
+export enum CardEditingStatus {
+  FREE = "free",
+  EDITING = "editing",
+  IN_PROCESS = "in process",
+}
+
+export type EditingStatusType = {
+  value: CardEditingStatus;
+  userName?: string;
+};
+
 export type FormProductValues = {
   id: string;
   name: string;
@@ -11,6 +22,10 @@ export type FormValues = {
   cardNotes: string;
   productsList: FormProductValues[];
   isDone?: boolean;
+  status?: {
+    value: CardEditingStatus;
+    userName?: string;
+  };
 };
 
 export interface ILoginValues {

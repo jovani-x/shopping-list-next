@@ -11,7 +11,7 @@ import ErrorMessage from "@/app/components/ErrorMessage/ErrorMessage";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import { authenticate } from "@/app/helpers/actions";
-import { useRouter, redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { getErrorMessage } from "@/lib/utils";
 
 const LoginForm = () => {
@@ -41,7 +41,6 @@ const LoginForm = () => {
       } else {
         setError("");
         router.push("/");
-        redirect("/");
       }
     } catch (err) {
       setError(getErrorMessage(err));

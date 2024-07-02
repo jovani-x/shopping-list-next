@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import TextControl from "@/app/components/TextControl/TextControl";
-import { userNameProps, passwordProps } from "@/app/helpers/forms";
+import { useUserNameProps, usePasswordProps } from "@/app/helpers/forms";
 import { ButtonContrast, ButtonTypes } from "@/app/components/Button/Button";
 import authFormStyles from "@/app/assets/styles/authForm.module.scss";
 import { ILoginValues } from "@/app/helpers/types";
@@ -51,19 +51,17 @@ const LoginForm = () => {
     <>
       <form action={formAction}>
         <TextControl
-          controlProps={{ ...userNameProps(), fieldState: getFieldState }}
+          controlProps={{ ...useUserNameProps(), fieldState: getFieldState }}
           register={register}
         />
         <TextControl
-          controlProps={{ ...passwordProps(), fieldState: getFieldState }}
+          controlProps={{ ...usePasswordProps(), fieldState: getFieldState }}
           register={register}
         />
         <div className={authFormStyles.btnHolder}>
-          <ButtonContrast
-            type={ButtonTypes.SUBMIT}
-            children={t("login")}
-            disabled={!canSave}
-          />
+          <ButtonContrast type={ButtonTypes.SUBMIT} disabled={!canSave}>
+            {t("login")}
+          </ButtonContrast>
         </div>
       </form>
       {error && <ErrorMessage text={error} />}

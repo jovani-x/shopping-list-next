@@ -73,16 +73,13 @@ const FriendsChoiceForm = ({
     <form action={formAction}>
       <SelectControl controlProps={controlItemUserProps} register={register} />
       <div className={`${authStyles.btnHolder}`}>
-        <Button
-          type={ButtonTypes.SUBMIT}
-          children={confirmBtnText}
-          disabled={!canSave}
-        />
+        <Button type={ButtonTypes.SUBMIT} disabled={!canSave}>
+          {confirmBtnText}
+        </Button>
         {cancelFun && (
-          <ButtonContrast
-            children={cancelBtnText ?? t("cancel")}
-            onClick={cancelFun}
-          />
+          <ButtonContrast onClick={cancelFun}>
+            {cancelBtnText ?? t("cancel")}
+          </ButtonContrast>
         )}
       </div>
       {error && <ErrorMessage text={error} />}

@@ -46,7 +46,7 @@ const ProductItem = ({
           {product.got ? "✅" : "👉"}
         </span>
         <h4>{product.name}</h4>
-        {product?.photo && <img src={"product.photo" ?? "#"} alt={""} />}
+        {/* {product?.photo && <img src={"product.photo" ?? "#"} alt={""} />} */}
         {hasNote && (
           <button type="button" onClick={() => setCollapsed(!collapsed)}>
             {collapsed ? "🔽" : "🔼"}

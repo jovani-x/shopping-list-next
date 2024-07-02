@@ -18,18 +18,11 @@ const Menu = () => {
   const user = useUserContext();
   const { t } = useTranslation();
   const pathname = usePathname();
-  const [isLoaded, setIsLoaded] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
-    setIsLoaded(true);
-  }, []);
-
-  useEffect(() => {
-    if (isLoaded && isMenuVisible) {
-      setIsMenuVisible(false);
-    }
-  }, [pathname]);
+    setIsMenuVisible(false);
+  }, [pathname, setIsMenuVisible]);
 
   const logoutHandle = async () => {
     try {
@@ -95,10 +88,9 @@ const Menu = () => {
             <LanguageMenu />
           </li>
         </ul>
-        <Button
-          onClick={() => setIsMenuVisible && setIsMenuVisible(false)}
-          children={t("closeMenu")}
-        />
+        <Button onClick={() => setIsMenuVisible && setIsMenuVisible(false)}>
+          {t("closeMenu")}
+        </Button>
       </nav>
     </FadeInOut>
   );

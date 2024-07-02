@@ -35,19 +35,23 @@ const CardForm = ({
   const router = useRouter();
   const FORM_ARR_NAME = "productsList";
   const { t } = useTranslation();
+  const defaultValues = useMemo(
+    () => ({
+      cardTitle: card?.name ?? "",
+      cardNotes: card?.notes ?? "",
+      productsList: card?.products ?? [],
+    }),
+    [card]
+  );
+
   const {
     register,
     control,
     getFieldState,
     formState: { isValid, isDirty },
-    setValue,
     getValues,
   } = useForm<FormValues>({
-    defaultValues: {
-      cardTitle: card?.name ?? "",
-      cardNotes: card?.notes ?? "",
-      productsList: card?.products ?? [],
-    },
+    defaultValues,
   });
 
   const { fields, append, remove } = useFieldArray({
@@ -186,15 +190,9 @@ const CardForm = ({
       : t("createCard");
   };
 
-  useMemo(() => {
-    setValue("cardTitle", card?.name ?? "");
-    setValue("cardNotes", card?.notes ?? "");
-    setValue("productsList", card?.products ?? []);
-  }, [card]);
-
   useEffect(() => {
     return () => refreshPagesCache(["/", `/${card?.id}`]);
-  }, []);
+  }, [card?.id]);
 
   const formAction = async () => {
     const data = getValues();
@@ -218,13 +216,12 @@ const CardForm = ({
               append(emptyProduct);
               setIsTooltipShown([...isTooltipShown, false]);
             }}
-            children={t("addProduct")}
-          />
-          <ButtonContrast
-            type={ButtonTypes.SUBMIT}
-            children={t("saveCard")}
-            disabled={!canSave}
-          />
+          >
+            {t("addProduct")}
+          </Button>
+          <ButtonContrast type={ButtonTypes.SUBMIT} disabled={!canSave}>
+            {t("saveCard")}
+          </ButtonContrast>
         </div>
       </form>
     </>

@@ -24,7 +24,7 @@ const Checkbox = ({
   const id = checkId ?? text;
   const [isChecked, setIsChecked] = useState(checked);
 
-  useEffect(() => onChange(isChecked), [isChecked]);
+  useEffect(() => onChange(isChecked), [isChecked, onChange]);
 
   const renderedCheckbox = !control ? (
     <input

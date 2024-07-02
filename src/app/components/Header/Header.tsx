@@ -19,10 +19,11 @@ const Header = () => {
       <strong className={headerStyles.title}>{`${t("welcome")}${str}`}</strong>
       <ButtonSimple
         onClick={() => setIsMenuVisible(true)}
-        children={langStr}
         extraClassname={headerStyles.langButton}
-      />
-      <Button onClick={() => setIsMenuVisible(true)} children={t("menu")} />
+      >
+        {langStr}
+      </ButtonSimple>
+      <Button onClick={() => setIsMenuVisible(true)}>{t("menu")}</Button>
     </header>
   );
 };

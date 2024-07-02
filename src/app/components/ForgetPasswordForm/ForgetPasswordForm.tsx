@@ -8,7 +8,7 @@ import { getErrorMessage } from "@/lib/utils";
 import ErrorMessage from "@/app/components/ErrorMessage/ErrorMessage";
 import { ButtonContrast, ButtonTypes } from "@/app/components/Button/Button";
 import TextControl from "@/app/components/TextControl/TextControl";
-import { emailProps } from "@/app/helpers/forms";
+import { useEmailProps } from "@/app/helpers/forms";
 import authFormStyles from "@/app/assets/styles/authForm.module.scss";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
@@ -47,15 +47,13 @@ const ForgetPasswordForm = () => {
     <>
       <form action={formAction}>
         <TextControl
-          controlProps={{ ...emailProps(), fieldState: getFieldState }}
+          controlProps={{ ...useEmailProps(), fieldState: getFieldState }}
           register={register}
         />
         <div className={authFormStyles.btnHolder}>
-          <ButtonContrast
-            type={ButtonTypes.SUBMIT}
-            children={t("restoreAccess")}
-            disabled={!canSave}
-          />
+          <ButtonContrast type={ButtonTypes.SUBMIT} disabled={!canSave}>
+            {t("restoreAccess")}
+          </ButtonContrast>
         </div>
       </form>
       {error && <ErrorMessage text={error} />}

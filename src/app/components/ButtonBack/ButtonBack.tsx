@@ -27,7 +27,6 @@ const ButtonBack = ({
   return (
     <TagName
       type={type}
-      children={children}
       disabled={disabled}
       extraClassname={extraClassname}
       onClick={
@@ -40,7 +39,9 @@ const ButtonBack = ({
             }
           : onClick
       }
-    />
+    >
+      {children}
+    </TagName>
   );
 };
 

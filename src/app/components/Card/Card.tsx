@@ -207,7 +207,6 @@ const Card = ({ card }: { card: ICard }) => {
       )}
       {isSaveAllowed && (
         <ButtonSimple
-          children={"💾"}
           onClick={async () => {
             try {
               const resp = await updateCard({
@@ -220,13 +219,14 @@ const Card = ({ card }: { card: ICard }) => {
               console.log("Saving Card failed", getErrorMessage(err));
             }
           }}
-        />
+        >
+          {"💾"}
+        </ButtonSimple>
       )}
       {isDeleteAllowed && (
-        <ButtonSimple
-          children={"❌"}
-          onClick={() => setIsTooltipShown(!isTooltipShown)}
-        />
+        <ButtonSimple onClick={() => setIsTooltipShown(!isTooltipShown)}>
+          {"❌"}
+        </ButtonSimple>
       )}
       {isDeleteAllowed && isTooltipShown && (
         <Confirmation
@@ -268,10 +268,9 @@ const Card = ({ card }: { card: ICard }) => {
     isSameUser && (
       <>
         <footer className={cardStyles.cardFoot}>
-          <Button
-            children={`${t("done")}?`}
-            onClick={() => setAllProductsDone()}
-          />
+          <Button onClick={() => setAllProductsDone()}>{`${t(
+            "done"
+          )}?`}</Button>
         </footer>
       </>
     );

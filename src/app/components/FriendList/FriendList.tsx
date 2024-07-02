@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import Checkbox from "@/app/components/Checkbox/Checkbox";
@@ -22,25 +22,25 @@ const FriendList = ({
 }) => {
   const { t } = useTranslation();
   const defaultChecked = false;
-  const defaultValues = {} as SelectedType;
+  const defaultValues = useMemo(() => {
+    const values = {} as SelectedType;
+    friendsProps?.map((fr) => (values[String(fr.id)] = defaultChecked));
+    return values;
+  }, [friendsProps, defaultChecked]);
   const [error, setError] = useState("");
   const [friends, setFriends] = useState(friendsProps);
   const refEvSource = useRef<EventSource | null>(null);
 
   useEffect(
-    initStreamListener.bind(null, {
-      refEvSource,
-      setData: setFriends,
-      dataName: "friends",
-      eventName: "usersupdate",
-    }),
+    () =>
+      initStreamListener({
+        refEvSource,
+        setData: setFriends,
+        dataName: "friends",
+        eventName: "usersupdate",
+      }),
     []
   );
-
-  useEffect(() => {
-    friends?.map((fr) => (defaultValues[String(fr.id)] = defaultChecked));
-    reset(defaultValues);
-  }, [friendsProps]);
 
   const {
     reset,
@@ -50,6 +50,10 @@ const FriendList = ({
   } = useForm({
     defaultValues,
   });
+
+  useEffect(() => {
+    reset(defaultValues);
+  }, [defaultValues, reset]);
 
   const canSave = isDirty && isValid;
 

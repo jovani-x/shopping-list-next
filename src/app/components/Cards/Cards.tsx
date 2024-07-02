@@ -14,12 +14,13 @@ const Cards = ({ cardsProps }: { cardsProps: ICard[] }) => {
   const refEvSource = useRef<EventSource | null>(null);
 
   useEffect(
-    initStreamListener.bind(null, {
-      refEvSource,
-      setData: setCards,
-      dataName: "cards",
-      eventName: "cardsupdate",
-    }),
+    () =>
+      initStreamListener({
+        refEvSource,
+        setData: setCards,
+        dataName: "cards",
+        eventName: "cardsupdate",
+      }),
     []
   );
 

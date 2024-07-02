@@ -5,10 +5,10 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import TextControl from "@/app/components/TextControl/TextControl";
 import {
-  userNameProps,
-  emailProps,
-  passwordProps,
-  confirmPasswordProps,
+  useUserNameProps,
+  useEmailProps,
+  usePasswordProps,
+  useConfirmPasswordProps,
 } from "@/app/helpers/forms";
 import { ButtonContrast, ButtonTypes } from "@/app/components/Button/Button";
 import authFormStyles from "@/app/assets/styles/authForm.module.scss";
@@ -59,35 +59,33 @@ const RegisterForm = () => {
       <form action={formAction}>
         <TextControl
           controlProps={{
-            ...userNameProps(),
+            ...useUserNameProps(),
             fieldState: getFieldState,
           }}
           register={register}
         />
         <TextControl
-          controlProps={{ ...emailProps(), fieldState: getFieldState }}
+          controlProps={{ ...useEmailProps(), fieldState: getFieldState }}
           register={register}
         />
         <TextControl
           controlProps={{
-            ...passwordProps(),
+            ...usePasswordProps(),
             fieldState: getFieldState,
           }}
           register={register}
         />
         <TextControl
           controlProps={{
-            ...confirmPasswordProps(),
+            ...useConfirmPasswordProps(),
             fieldState: getFieldState,
           }}
           register={register}
         />
         <div className={authFormStyles.btnHolder}>
-          <ButtonContrast
-            type={ButtonTypes.SUBMIT}
-            children={t("createAccount")}
-            disabled={!canSave}
-          />
+          <ButtonContrast type={ButtonTypes.SUBMIT} disabled={!canSave}>
+            {t("createAccount")}
+          </ButtonContrast>
         </div>
       </form>
       {error && <ErrorMessage text={error} />}

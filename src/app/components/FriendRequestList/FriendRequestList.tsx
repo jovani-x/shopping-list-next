@@ -28,12 +28,13 @@ const FriendRequestList = ({ requests }: { requests: IRequest[] }) => {
     );
 
   useEffect(
-    initStreamListener.bind(null, {
-      refEvSource,
-      setData: setReqData,
-      dataName: "requests",
-      eventName: "usersupdate",
-    }),
+    () =>
+      initStreamListener({
+        refEvSource,
+        setData: setReqData,
+        dataName: "requests",
+        eventName: "usersupdate",
+      }),
     []
   );
 

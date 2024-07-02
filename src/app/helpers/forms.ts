@@ -6,7 +6,7 @@ import {
 } from "@/app/components/TextControl/TextControl";
 import { useTranslation } from "react-i18next";
 
-export const userNameProps = (): TextControlProps => {
+export const useUserNameProps = (): TextControlProps => {
   const { t } = useTranslation();
 
   return {
@@ -20,7 +20,7 @@ export const userNameProps = (): TextControlProps => {
   };
 };
 
-export const passwordProps = (): TextControlProps => {
+export const usePasswordProps = (): TextControlProps => {
   const { t } = useTranslation();
 
   return {
@@ -34,7 +34,7 @@ export const passwordProps = (): TextControlProps => {
   };
 };
 
-export const confirmPasswordProps = (): TextControlProps => {
+export const useConfirmPasswordProps = (): TextControlProps => {
   const { t } = useTranslation();
 
   return {
@@ -48,7 +48,7 @@ export const confirmPasswordProps = (): TextControlProps => {
   };
 };
 
-export const emailProps = (): TextControlProps => {
+export const useEmailProps = (): TextControlProps => {
   const { t } = useTranslation();
 
   return {
@@ -62,7 +62,7 @@ export const emailProps = (): TextControlProps => {
   };
 };
 
-export const messageProps = (): TextControlProps => {
+export const useMessageProps = (): TextControlProps => {
   const { t } = useTranslation();
 
   return {

@@ -18,9 +18,10 @@ const CardStatusSetter = ({
   return (
     <ButtonBack
       btnComponentName={ButtonComponentsType.SIMPLE}
-      children={children}
       callback={async () => await updateCard({ ...card, status })}
-    />
+    >
+      {children}
+    </ButtonBack>
   );
 };
 

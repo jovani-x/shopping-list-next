@@ -63,12 +63,11 @@ export default async function EditCardPage({
   const renderedBtnBack = (
     <CardStatusSetter
       card={card}
-      children={`< ${t("back")}`}
       status={{
         value: CardEditingStatus.FREE,
         userName: "",
       }}
-    />
+    >{`< ${t("back")}`}</CardStatusSetter>
   );
 
   return (

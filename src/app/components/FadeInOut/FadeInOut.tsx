@@ -55,7 +55,7 @@ const FadeInOut = ({
         setComponentStatus(ComponentState.EXITING);
       }
     }
-  }, [mounted.current, isShown]);
+  }, [isShown, componentStatus]);
 
   useEffect(() => {
     if (componentStatus === ComponentState.ENTERING) {
@@ -72,7 +72,7 @@ const FadeInOut = ({
     if (!isShown && componentStatus === ComponentState.EXITED) {
       setComponentStatus(ComponentState.UNMOUNTED);
     }
-  }, [componentStatus]);
+  }, [componentStatus, duration, isShown]);
 
   return (
     <>

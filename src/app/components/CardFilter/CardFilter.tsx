@@ -16,7 +16,7 @@ const CardFilter = ({ filterState, setFilterState }: IFilter) => {
       unfinished,
       done,
     });
-  }, [unfinished, done]);
+  }, [unfinished, done, setFilterState]);
 
   return (
     <>

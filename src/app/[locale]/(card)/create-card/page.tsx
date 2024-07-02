@@ -14,10 +14,9 @@ export default async function CreateCardPage({
   return (
     <>
       <div className="baseContainer">
-        <ButtonBack
-          btnComponentName={ButtonComponentsType.SIMPLE}
-          children={`< ${t("back")}`}
-        />
+        <ButtonBack btnComponentName={ButtonComponentsType.SIMPLE}>{`< ${t(
+          "back"
+        )}`}</ButtonBack>
         <CardForm mutationFunc={createCard} />
       </div>
     </>

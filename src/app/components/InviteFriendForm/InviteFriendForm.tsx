@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { inviteFriendViaEmail } from "@/app/helpers/actions";
-import { emailProps, messageProps } from "@/app/helpers/forms";
+import { useEmailProps, useMessageProps } from "@/app/helpers/forms";
 import TextControl from "@/app/components/TextControl/TextControl";
 import Button, { ButtonTypes } from "@/app/components/Button/Button";
 import ErrorMessage from "@/app/components/ErrorMessage/ErrorMessage";
@@ -40,7 +40,7 @@ const InviteFriendForm = () => {
     <form action={formAction}>
       <TextControl
         controlProps={{
-          ...emailProps(),
+          ...useEmailProps(),
           placeholder: t("email"),
           fieldState: getFieldState,
         }}
@@ -48,7 +48,7 @@ const InviteFriendForm = () => {
       />
       <TextControl
         controlProps={{
-          ...messageProps(),
+          ...useMessageProps(),
           placeholder: t("message"),
           fieldState: getFieldState,
         }}

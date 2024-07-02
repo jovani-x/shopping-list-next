@@ -12,10 +12,9 @@ export default async function RegisterPage({
 
   return (
     <div className="baseContainer mt-auto mb-auto">
-      <ButtonBack
-        btnComponentName={ButtonComponentsType.SIMPLE}
-        children={`< ${t("back")}`}
-      />
+      <ButtonBack btnComponentName={ButtonComponentsType.SIMPLE}>{`< ${t(
+        "back"
+      )}`}</ButtonBack>
       <h1>{t("createAccount")}</h1>
       <RegisterForm />
     </div>

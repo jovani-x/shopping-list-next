@@ -21,8 +21,8 @@ const Confirmation = ({
       className={`${stylesConfirmation.confirmationTooltip} ${extraClassname}`}
     >
       <span>{text}</span>
-      <ButtonSimple onClick={() => yesFunc()} children={yesText} />
-      <ButtonSimple onClick={() => noFunc()} children={noText} />
+      <ButtonSimple onClick={() => yesFunc()}>{yesText}</ButtonSimple>
+      <ButtonSimple onClick={() => noFunc()}>{noText}</ButtonSimple>
     </div>
   );
 };

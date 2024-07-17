@@ -33,9 +33,9 @@ export default async function EditCardPage({
     );
   }
 
-  const isOwner = card.userRole !== UserRole.owner;
+  const isOwner = card.userRole === UserRole.owner;
 
-  if (isOwner) {
+  if (!isOwner) {
     return (
       <YCenteredBlock>
         <h1>{t("unauthorizedRequest")}</h1>

@@ -19,9 +19,7 @@ const EditingStatus = ({ status }: { status: EditingStatusType }) => {
   } ${inProcess ? statusStyles.inProcess : ""}`;
   const statusStr = isBeingEdited
     ? `${t("isEditing")} ...`
-    : inProcess
-    ? `${t("isShopping")} ...`
-    : "";
+    : `${t("isShopping")} ...`;
 
   return <div className={classStr}>{`${userName} ${statusStr}`}</div>;
 };

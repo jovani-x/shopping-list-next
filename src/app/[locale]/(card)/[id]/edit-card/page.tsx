@@ -1,11 +1,11 @@
 import initTranslations from "@/app/i18n";
 import CardForm from "@/app/components/CardForm/CardForm";
-import { getCard, updateCard } from "@/app/helpers/actions";
+import { getCard, updateCard } from "@/app/actions/client/cards";
 import { UserRole, CardEditingStatus } from "@/app/helpers/types";
 import YCenteredBlock from "@/app/components/YCenteredBlock/YCenteredBlock";
 import Link from "next/link";
 import authFormStyles from "@/app/assets/styles/authForm.module.scss";
-import { getAuthToken, getCurrentUser } from "@/app/helpers/utils";
+import { getCurrentUser, getAuthToken } from "@/app/helpers/auth";
 import EditingStatus from "@/app/components/EditingStatus/EditingStatus";
 import CardStatusSetter from "@/app/components/CardStatusSetter/CardStatusSetter";
 

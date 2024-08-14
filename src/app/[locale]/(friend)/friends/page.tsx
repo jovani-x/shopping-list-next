@@ -3,7 +3,7 @@ import FriendRequestList from "@/app/components/FriendRequestList/FriendRequestL
 import InviteFriend from "@/app/components/InviteFriend/InviteFriend";
 import FriendList from "@/app/components/FriendList/FriendList";
 import Panel from "@/app/components/Panel/Panel";
-import { getAllFriends, getUserRequests } from "@/app/helpers/actions";
+import { getAllFriends, getUserRequests } from "@/app/actions/client/friends";
 import { UserRequest } from "@/app/helpers/types";
 
 export default async function FriendsPage({
@@ -12,10 +12,12 @@ export default async function FriendsPage({
   params: { locale: string };
 }) {
   const { t } = await initTranslations(locale);
-  const [friends, requests] = await Promise.all([
-    getAllFriends(),
-    getUserRequests({ type: UserRequest.becomeFriend }),
-  ]);
+  const [friends, requests] = (
+    await Promise.allSettled([
+      getAllFriends(),
+      getUserRequests({ type: UserRequest.becomeFriend }),
+    ])
+  ).map((el) => (el.status !== "fulfilled" ? [] : el.value));
 
   return (
     <>

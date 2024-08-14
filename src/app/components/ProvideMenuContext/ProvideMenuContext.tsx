@@ -1,36 +1,47 @@
 "use client";
 
-import { useState, createContext } from "react";
+import { useState, createContext, useContext } from "react";
 
 export interface IMenuContext {
   isMenuVisible: boolean;
   setIsMenuVisible: (isMenuVisible: boolean) => void;
 }
 
-export const MenuContext = createContext<IMenuContext>({
+const MenuContext = createContext<IMenuContext>({
   isMenuVisible: false,
   setIsMenuVisible: () => null,
 });
+
+export const useMenuContext = () => {
+  const menuCtx = useContext(MenuContext);
+  if (!menuCtx) {
+    throw Error("Wrap components with <ProvideMenuContext />");
+  }
+
+  return menuCtx;
+};
 
 const ProvideMenuContext = ({
   children,
   opts,
 }: {
   children: React.ReactNode;
-  opts?: IMenuContext;
+  opts?: Pick<IMenuContext, "isMenuVisible">;
 }) => {
   const [isMenuVisible, setIsMenuVisible] = useState(
-    opts ? opts.isMenuVisible : false
+    opts?.isMenuVisible ?? false
   );
 
-  const value = opts
-    ? opts
-    : {
+  return (
+    <MenuContext.Provider
+      value={{
         isMenuVisible,
         setIsMenuVisible,
-      };
-
-  return <MenuContext.Provider value={value}>{children}</MenuContext.Provider>;
+      }}
+    >
+      {children}
+    </MenuContext.Provider>
+  );
 };
 
 export default ProvideMenuContext;

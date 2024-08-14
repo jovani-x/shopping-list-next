@@ -13,7 +13,7 @@ import {
 import { ButtonContrast, ButtonTypes } from "@/app/components/Button/Button";
 import authFormStyles from "@/app/assets/styles/authForm.module.scss";
 import { IRegisterValues } from "@/app/helpers/types";
-import { registerUser } from "@/app/helpers/actions";
+import { registerUser } from "@/app/actions/client/auth";
 import ErrorMessage from "@/app/components/ErrorMessage/ErrorMessage";
 import { getErrorMessage } from "@/lib/utils";
 import Link from "next/link";

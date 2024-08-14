@@ -5,7 +5,7 @@ import CardFilter from "@/app/components/CardFilter/CardFilter";
 import { useCardsFilterContext } from "@/app/components/ProvideCardsFilterContext/ProvideCardsFilterContext";
 import { useTranslation } from "react-i18next";
 import { useEffect, useRef, useState } from "react";
-import { initStreamListener } from "@/app/helpers/utils-client";
+import { initStreamListener } from "@/app/helpers/listener";
 
 const Cards = ({ cardsProps }: { cardsProps: ICard[] }) => {
   const { filterState, setFilterState } = useCardsFilterContext();

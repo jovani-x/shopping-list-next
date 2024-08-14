@@ -1,7 +1,7 @@
 import Link from "next/link";
 import authFormStyles from "@/app/assets/styles/authForm.module.scss";
 import initTranslations from "@/app/i18n";
-import { getCurrentLocale } from "@/app/helpers/utils";
+import { getCurrentLocale } from "@/app/helpers/language";
 import YCenteredBlock from "@/app/components/YCenteredBlock/YCenteredBlock";
 
 export default async function NotFoundPage() {

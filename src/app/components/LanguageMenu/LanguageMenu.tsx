@@ -6,7 +6,7 @@ import Link from "next/link";
 import { LANGUAGES } from "@/app/i18n";
 import { useTranslation } from "react-i18next";
 import i18nConfig from "@/i18nConfig";
-import { changeLanguage } from "@/app/helpers/actions";
+import { changeLanguage } from "@/app/helpers/language";
 
 const LanguageMenu = () => {
   const { i18n } = useTranslation();

@@ -5,11 +5,11 @@ import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import Checkbox from "@/app/components/Checkbox/Checkbox";
 import { ButtonContrast, ButtonTypes } from "@/app/components/Button/Button";
-import { deleteFriends, deleteFriend } from "@/app/helpers/actions";
+import { deleteFriends, deleteFriend } from "@/app/actions/client/friends";
 import { FriendType } from "@/app/helpers/types";
 import { getErrorMessage } from "@/lib/utils";
 import ErrorMessage from "@/app/components/ErrorMessage/ErrorMessage";
-import { initStreamListener } from "@/app/helpers/utils-client";
+import { initStreamListener } from "@/app/helpers/listener";
 
 type SelectedType = {
   [key: string]: boolean;

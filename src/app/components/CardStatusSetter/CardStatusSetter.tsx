@@ -2,7 +2,7 @@
 
 import { EditingStatusType } from "@/app/helpers/types";
 import { ICard } from "@/app/components/Card/Card";
-import { updateCard } from "@/app/helpers/actions";
+import { updateCard } from "@/app/actions/client/cards";
 import { ButtonComponentsType } from "@/app/components/Button/Button";
 import ButtonBack from "@/app/components/ButtonBack/ButtonBack";
 

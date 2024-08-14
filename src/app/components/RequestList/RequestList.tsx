@@ -1,7 +1,7 @@
 "use server";
 
 import initTranslations from "@/app/i18n";
-import { getCurrentLocale } from "@/app/helpers/utils";
+import { getCurrentLocale } from "@/app/helpers/language";
 import { IRequest } from "@/app/helpers/types";
 import RequestItem from "@/app/components/RequestItem/RequestItem";
 

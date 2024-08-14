@@ -1,12 +1,15 @@
 "use client";
 
-import { approveFriendship, declineFriendship } from "@/app/helpers/actions";
+import {
+  approveFriendship,
+  declineFriendship,
+} from "@/app/actions/client/friends";
 import { IRequest } from "@/app/helpers/types";
 
 import { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import RequestItem from "@/app/components/RequestItem/RequestItem";
-import { initStreamListener } from "@/app/helpers/utils-client";
+import { initStreamListener } from "@/app/helpers/listener";
 
 const FriendRequestList = ({ requests }: { requests: IRequest[] }) => {
   const [reqData, setReqData] = useState(requests);

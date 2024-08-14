@@ -10,7 +10,7 @@ import { ILoginValues } from "@/app/helpers/types";
 import ErrorMessage from "@/app/components/ErrorMessage/ErrorMessage";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
-import { authenticate } from "@/app/helpers/actions";
+import { login } from "@/app/actions/client/auth";
 import { useRouter } from "next/navigation";
 import { getErrorMessage } from "@/lib/utils";
 
@@ -34,7 +34,7 @@ const LoginForm = () => {
 
   const formAction = async (formData: FormData) => {
     try {
-      const res = await authenticate(formData);
+      const res = await login(formData);
 
       if (!res?.userName) {
         setError(res.message);

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { IForgetValues } from "@/app/helpers/types";
-import { forgetPassword } from "@/app/helpers/actions";
+import { forgetPassword } from "@/app/actions/client/auth";
 import { getErrorMessage } from "@/lib/utils";
 import ErrorMessage from "@/app/components/ErrorMessage/ErrorMessage";
 import { ButtonContrast, ButtonTypes } from "@/app/components/Button/Button";

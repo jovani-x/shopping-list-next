@@ -22,7 +22,7 @@ import Confirmation from "@/app/components/Confirmation/Confirmation";
 import { useTranslation } from "react-i18next";
 import { ICard } from "@/app/components/Card/Card";
 import { getErrorMessage } from "@/lib/utils";
-import { refreshPagesCache } from "@/app/helpers/actions";
+import { refreshPagesCache } from "@/app/helpers/utils-common";
 
 const CardForm = ({
   mutationFunc,

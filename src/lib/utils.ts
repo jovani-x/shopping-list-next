@@ -1,3 +1,5 @@
+import { type ResponseCookie } from "next/dist/compiled/@edge-runtime/cookies";
+
 type ErrorWithMessage = {
   message: string;
 };
@@ -28,3 +30,45 @@ const toErrorWithMessage = (maybeError: unknown): ErrorWithMessage => {
 export const getErrorMessage = (error: unknown) => {
   return toErrorWithMessage(error).message;
 };
+
+export const getCookieTemplateObject = async (
+  cookieName: string
+): Promise<ResponseCookie> => ({
+  name: cookieName,
+  value: "",
+  httpOnly: true,
+  secure: true,
+  sameSite: "none",
+  maxAge: 0,
+});
+
+export const getEnumTypeEntityByValue = ({
+  EnumType,
+  targetValue,
+  withTransform = false,
+}: {
+  EnumType: any;
+  targetValue: any;
+  withTransform?: boolean;
+}) => {
+  if (targetValue === undefined || targetValue === null) return undefined;
+
+  const tmpKeyStr = Object.entries(EnumType).filter(([_key, value]) =>
+    withTransform && typeof value === "string"
+      ? transformEnumTypeValue(value) === targetValue
+      : value === targetValue
+  );
+  const keyStr = tmpKeyStr.length === 0 ? undefined : tmpKeyStr[0][0];
+
+  if (!keyStr) return undefined;
+
+  const valueStr = EnumType[keyStr as keyof typeof EnumType];
+
+  return {
+    key: keyStr,
+    value: valueStr,
+  };
+};
+
+export const transformEnumTypeValue = (value: string) =>
+  value.toLocaleLowerCase().replace(/ /g, "-");

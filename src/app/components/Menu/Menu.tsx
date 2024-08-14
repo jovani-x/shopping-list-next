@@ -4,17 +4,17 @@ import Button from "@/app/components/Button/Button";
 import menuStyles from "./menu.module.scss";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useContext, useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { MenuContext } from "@/app/components/ProvideMenuContext/ProvideMenuContext";
+import { useMenuContext } from "@/app/components/ProvideMenuContext/ProvideMenuContext";
 import { useUserContext } from "@/app/components/ProvideUserContext/ProvideUserContext";
 import FadeInOut from "@/app/components/FadeInOut/FadeInOut";
 import LanguageMenu from "@/app/components/LanguageMenu/LanguageMenu";
-import { logout } from "@/app/helpers/actions";
+import { logout } from "@/app/actions/client/auth";
 import { getErrorMessage } from "@/lib/utils";
 
 const Menu = () => {
-  const { isMenuVisible, setIsMenuVisible } = useContext(MenuContext);
+  const { isMenuVisible, setIsMenuVisible } = useMenuContext();
   const user = useUserContext();
   const { t } = useTranslation();
   const pathname = usePathname();

@@ -1,5 +1,5 @@
 import initTranslations from "@/app/i18n";
-import { getCard } from "@/app/helpers/actions";
+import { getCard } from "@/app/actions/client/cards";
 import Card from "@/app/components/Card/Card";
 import { notFound } from "next/navigation";
 

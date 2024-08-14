@@ -9,7 +9,7 @@ import Footer from "@/app/components/Footer/Footer";
 import Menu from "@/app/components/Menu/Menu";
 import ProvideCardsFilterContext from "@/app/components/ProvideCardsFilterContext/ProvideCardsFilterContext";
 import ProvideUserContext from "@/app/components/ProvideUserContext/ProvideUserContext";
-import { getAuthToken, getCurrentUser } from "@/app/helpers/utils";
+import { getCurrentUser, getAuthToken } from "@/app/helpers/auth";
 
 export const metadata: Metadata = {
   title: "Shopping List App",

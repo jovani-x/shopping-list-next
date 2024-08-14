@@ -1,4 +1,4 @@
-import { getAllCards } from "@/app/helpers/actions";
+import { getAllCards } from "@/app/actions/client/cards";
 import Cards from "@/app/components/Cards/Cards";
 import Button from "@/app/components/Button/Button";
 import initTranslations from "@/app/i18n";

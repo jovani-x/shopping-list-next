@@ -3,7 +3,7 @@
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { inviteFriendViaEmail } from "@/app/helpers/actions";
+import { inviteFriendViaEmail } from "@/app/actions/client/friends";
 import { useEmailProps, useMessageProps } from "@/app/helpers/forms";
 import TextControl from "@/app/components/TextControl/TextControl";
 import Button, { ButtonTypes } from "@/app/components/Button/Button";

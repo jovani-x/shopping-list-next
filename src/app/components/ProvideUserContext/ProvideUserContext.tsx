@@ -10,7 +10,14 @@ export const UserContext = createContext<IUserContext>({
   userName: "",
 });
 
-export const useUserContext = () => useContext(UserContext);
+export const useUserContext = () => {
+  const userCtx = useContext(UserContext);
+  if (!userCtx) {
+    throw Error("Wrap components with <ProvideUserContext />");
+  }
+
+  return userCtx;
+};
 
 const ProvideUserContext = ({
   children,

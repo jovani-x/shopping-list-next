@@ -21,7 +21,7 @@ const mocks = vi.hoisted(() => ({
     .mockImplementation(() => ({ userName: mocks.userName })),
 }));
 
-vi.mock("@/app/helpers/actions", () => ({
+vi.mock("@/app/actions/client/cards", () => ({
   getCard: mocks.getCard,
   updateCard: mocks.updateCard,
 }));
@@ -38,7 +38,7 @@ vi.mock("@/components/EditingStatus/EditingStatus", () => ({
   default: () => <div>{mocks.editingStr}</div>,
 }));
 
-vi.mock("@/app/helpers/utils", () => ({
+vi.mock("@/app/helpers/auth", () => ({
   getAuthToken: vi.fn().mockImplementation(() => mocks.token),
   getCurrentUser: mocks.getCurrentUser,
 }));

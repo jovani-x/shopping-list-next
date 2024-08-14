@@ -20,7 +20,7 @@ const mocks = vi.hoisted(() => ({
     .mockImplementation(() => ({ userName: mocks.userName })),
 }));
 
-vi.mock("@/app/helpers/utils", () => ({
+vi.mock("@/app/helpers/auth", () => ({
   getAuthToken: vi.fn().mockImplementation(() => mocks.token),
   getCurrentUser: mocks.getCurrentUser,
 }));

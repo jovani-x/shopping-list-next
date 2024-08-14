@@ -16,7 +16,7 @@ const mocks = vi.hoisted(() => ({
   })),
 }));
 
-vi.mock("@/app/helpers/utils-client", () => ({
+vi.mock("@/app/helpers/listener", () => ({
   initStreamListener: mocks.initStreamListener,
 }));
 

@@ -7,9 +7,9 @@ import userEvent from "@testing-library/user-event";
 import CardStatusSetter from "./CardStatusSetter";
 import { getTestCard } from "@/tests/test-utils";
 import { CardEditingStatus } from "@/app/helpers/types";
-import { updateCard } from "@/app/helpers/actions";
+import { updateCard } from "@/app/actions/client/cards";
 
-vi.mock("@/app/helpers/actions", () => ({
+vi.mock("@/app/actions/client/cards", () => ({
   updateCard: vi.fn(),
 }));
 

@@ -21,13 +21,33 @@ vi.mock("@/components/Panel/Panel", () => ({
   default: () => <div>{mocks.panelStr}</div>,
 }));
 
-vi.mock("@/app/helpers/actions", () => ({
+vi.mock("@/app/actions/client/friends", () => ({
   getAllFriends: mocks.getAllFriends,
   getUserRequests: mocks.getUserRequests,
 }));
 
 describe("Friends page", () => {
   it("Rendered", async () => {
+    const jsx = await FriendsPage({ params: { locale: "en" } });
+    const { getAllByText, getByText, getByRole } = render(jsx);
+
+    expect(getByRole("heading", { level: 1 })).toBeInTheDocument();
+    expect(getByText(mocks.inviteStr)).toBeInTheDocument();
+    expect(getAllByText(mocks.panelStr).length).toBe(2);
+    expect(mocks.getAllFriends).toBeCalled();
+    expect(mocks.getUserRequests).toBeCalledWith({
+      type: UserRequest.becomeFriend,
+    });
+  });
+
+  it("Rendered with faild requests", async () => {
+    mocks.getAllFriends.mockImplementationOnce(() =>
+      Promise.reject(new Error())
+    );
+    mocks.getUserRequests.mockImplementationOnce(() =>
+      Promise.reject(new Error())
+    );
+
     const jsx = await FriendsPage({ params: { locale: "en" } });
     const { getAllByText, getByText, getByRole } = render(jsx);
 

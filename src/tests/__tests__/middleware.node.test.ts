@@ -21,7 +21,7 @@ vi.mock("@/i18nConfig", () => ({
   default: {},
 }));
 
-vi.mock("@/app/helpers/utils", () => ({
+vi.mock("@/app/helpers/auth", () => ({
   getAuthTokenName: mocks.getAuthTokenName,
 }));
 
@@ -34,7 +34,7 @@ describe("Middleware", () => {
       nextUrl: {
         pathname: "/protected-page",
       },
-      url: "http://localhost:3000/protected-page",
+      url: "https://localhost:3000/protected-page",
     } as unknown as NextRequest;
 
     const response = await middleware(request);
@@ -42,7 +42,7 @@ describe("Middleware", () => {
     // https://nextjs.org/docs/app/building-your-application/routing/redirecting
     expect(response.status).toBe(307);
     expect(response.headers.get("Location")).toBe(
-      "http://localhost:3000/login"
+      "https://localhost:3000/login"
     );
   });
 
@@ -55,7 +55,7 @@ describe("Middleware", () => {
       nextUrl: {
         pathname: "/protected-page",
       },
-      url: "http://localhost:3000/protected-page",
+      url: "https://localhost:3000/protected-page",
     } as unknown as NextRequest;
     const mockResponse = NextResponse.next();
     mocks.i18nRouter.mockReturnValue(mockResponse);
@@ -78,7 +78,7 @@ describe("Middleware", () => {
       nextUrl: {
         pathname: "/login",
       },
-      url: "http://localhost:3000/login",
+      url: "https://localhost:3000/login",
     } as unknown as NextRequest;
     const mockResponse = NextResponse.next();
     mocks.i18nRouter.mockReturnValue(mockResponse);

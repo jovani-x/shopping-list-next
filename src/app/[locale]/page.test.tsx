@@ -10,7 +10,7 @@ const mocks = vi.hoisted(() => ({
   cardsStr: "Test Cards",
 }));
 
-vi.mock("@/app/helpers/actions", () => ({
+vi.mock("@/app/actions/client/cards", () => ({
   getAllCards: mocks.handleGetData,
 }));
 

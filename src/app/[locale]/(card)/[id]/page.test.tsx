@@ -12,7 +12,7 @@ const mocks = vi.hoisted(() => ({
   notFound: "Test not found",
 }));
 
-vi.mock("@/app/helpers/actions", () => ({
+vi.mock("@/app/actions/client/cards", () => ({
   getCard: mocks.getCard,
 }));
 

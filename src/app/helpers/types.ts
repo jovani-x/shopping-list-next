@@ -59,14 +59,6 @@ export interface ITryError {
   data?: { message?: string };
 }
 
-export const hasUserType = (user: any): user is IUser => {
-  return (
-    typeof user === "object" &&
-    !!user.userName &&
-    typeof user.userName === "string"
-  );
-};
-
 export enum StateStatusType {
   IDLE = "idle",
   LOADING = "loading",
@@ -96,7 +88,7 @@ export enum UserRole {
 export type FriendType = {
   id: string;
   userName: string;
-  cards: [{ cardId: string; role: UserRole }];
+  cards: { cardId: string; role: UserRole }[];
 };
 
 export enum UserRequest {

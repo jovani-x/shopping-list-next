@@ -83,6 +83,7 @@ const Modal = ({
           onKeyDown={handleKeyDown}
           className={modalStyles.modal}
           onClick={handleOutsideClick}
+          aria-hidden={!isOpen}
         >
           <Panel headContent={headContent()} bodyContent={children} />
         </dialog>,

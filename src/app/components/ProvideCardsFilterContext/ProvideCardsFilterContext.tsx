@@ -28,5 +28,9 @@ const ProvideCardsFilterContext = ({
 export default ProvideCardsFilterContext;
 
 export function useCardsFilterContext() {
-  return useContext(CardsFilterContext);
+  const cardsFilterContext = useContext(CardsFilterContext);
+  if (!cardsFilterContext) {
+    throw Error("Wrap components with <ProvideCardsFilterContext />");
+  }
+  return cardsFilterContext;
 }

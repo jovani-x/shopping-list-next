@@ -13,7 +13,7 @@ export enum TextControlTypes {
 export interface TextControlProps {
   label: string;
   id: string;
-  type: TextControlTypes;
+  type?: TextControlTypes;
   placeholder: string | null;
   required: Boolean | { value: Boolean; message: string };
   name: string;
@@ -51,7 +51,7 @@ const TextControl = ({
       <textarea {...register(name, regProps)} {...props} />
     ) : (
       <input
-        type={type || TextControlTypes.TEXT}
+        type={type ?? TextControlTypes.TEXT}
         {...register(name, regProps)}
         {...props}
       />

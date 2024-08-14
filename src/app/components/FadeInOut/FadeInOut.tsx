@@ -4,8 +4,6 @@ import { useState, useEffect, useRef } from "react";
 
 enum ComponentState {
   UNMOUNTED = "unmounted",
-  EXITED = "exited",
-  ENTERING = "entering",
   ENTERED = "entered",
   EXITING = "exiting",
 }
@@ -21,73 +19,52 @@ const FadeInOut = ({
   children: React.ReactNode;
   classNames?: string;
 }) => {
-  const mounted = useRef(false);
   const transitionStyles = {
-    entering: { transform: "scale(0)" },
+    unmounted: { transform: "scale(0)" },
     entered: { transform: "scale(1)" },
     exiting: { transform: "scale(0)" },
-    exited: { transform: "scale(0)" },
   };
-
-  const [componentStatus, setComponentStatus] = useState(
+  const [componentStatus, setComponentStatus] = useState<ComponentState>(
     ComponentState.UNMOUNTED
   );
-
-  useEffect(() => {
-    if (!mounted.current) {
-      mounted.current = true;
-    }
-  }, []);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (isShown) {
-      if (
-        componentStatus !== ComponentState.ENTERING &&
-        componentStatus !== ComponentState.ENTERED
-      ) {
-        setComponentStatus(ComponentState.ENTERING);
-      }
-    } else {
-      if (
-        componentStatus === ComponentState.ENTERING ||
-        componentStatus === ComponentState.ENTERED
-      ) {
-        setComponentStatus(ComponentState.EXITING);
-      }
+      setComponentStatus(ComponentState.ENTERED);
+    } else if (componentStatus === ComponentState.ENTERED) {
+      setComponentStatus(ComponentState.EXITING);
     }
   }, [isShown, componentStatus]);
 
   useEffect(() => {
-    if (componentStatus === ComponentState.ENTERING) {
-      setTimeout(() => {
-        setComponentStatus(ComponentState.ENTERED);
-      }, 50);
-    }
     if (componentStatus === ComponentState.EXITING) {
-      setTimeout(() => {
-        setComponentStatus(ComponentState.EXITED);
+      timeoutRef.current = setTimeout(() => {
+        setComponentStatus(ComponentState.UNMOUNTED);
       }, duration);
     }
 
-    if (!isShown && componentStatus === ComponentState.EXITED) {
-      setComponentStatus(ComponentState.UNMOUNTED);
-    }
-  }, [componentStatus, duration, isShown]);
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, [componentStatus, duration]);
+
+  if (componentStatus === ComponentState.UNMOUNTED && !isShown) {
+    return null;
+  }
 
   return (
-    <>
-      {componentStatus !== ComponentState.UNMOUNTED && (
-        <div
-          className={classNames}
-          style={{
-            transition: `transform ${duration}ms ease-in-out`,
-            ...transitionStyles[componentStatus],
-          }}
-        >
-          {children}
-        </div>
-      )}
-    </>
+    <div
+      className={classNames}
+      style={{
+        transition: `transform ${duration}ms ease-in-out`,
+        ...transitionStyles[componentStatus],
+      }}
+    >
+      {children}
+    </div>
   );
 };
 

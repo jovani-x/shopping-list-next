@@ -6,14 +6,15 @@ export interface IUserContext {
   userName: string;
 }
 
-export const UserContext = createContext<IUserContext>({
-  userName: "",
-});
+export const UserContext = createContext<IUserContext | null>(null);
+
+export const userContextErrorMessage =
+  "Wrap components with <ProvideUserContext />";
 
 export const useUserContext = () => {
   const userCtx = useContext(UserContext);
   if (!userCtx) {
-    throw Error("Wrap components with <ProvideUserContext />");
+    throw Error(userContextErrorMessage);
   }
 
   return userCtx;

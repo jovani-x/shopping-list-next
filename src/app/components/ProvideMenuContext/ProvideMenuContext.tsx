@@ -7,15 +7,15 @@ export interface IMenuContext {
   setIsMenuVisible: (isMenuVisible: boolean) => void;
 }
 
-const MenuContext = createContext<IMenuContext>({
-  isMenuVisible: false,
-  setIsMenuVisible: () => null,
-});
+const MenuContext = createContext<IMenuContext | null>(null);
+
+export const menuContextErrorMessage =
+  "Wrap components with <ProvideMenuContext />";
 
 export const useMenuContext = () => {
   const menuCtx = useContext(MenuContext);
   if (!menuCtx) {
-    throw Error("Wrap components with <ProvideMenuContext />");
+    throw Error(menuContextErrorMessage);
   }
 
   return menuCtx;
@@ -26,11 +26,9 @@ const ProvideMenuContext = ({
   opts,
 }: {
   children: React.ReactNode;
-  opts?: Pick<IMenuContext, "isMenuVisible">;
+  opts: Pick<IMenuContext, "isMenuVisible">;
 }) => {
-  const [isMenuVisible, setIsMenuVisible] = useState(
-    opts?.isMenuVisible ?? false
-  );
+  const [isMenuVisible, setIsMenuVisible] = useState(opts.isMenuVisible);
 
   return (
     <MenuContext.Provider

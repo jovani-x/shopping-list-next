@@ -36,12 +36,16 @@ export default async function RootLayout({
           resources={resources}
         >
           <ProvideUserContext value={{ userName: user?.userName || "" }}>
-            <ProvideMenuContext>
+            <ProvideMenuContext opts={{ isMenuVisible: false }}>
               <Header />
               <Menu />
             </ProvideMenuContext>
             <main className="contentLayout">
-              <ProvideCardsFilterContext>{children}</ProvideCardsFilterContext>
+              <ProvideCardsFilterContext
+                value={{ filterState: { unfinished: true, done: true } }}
+              >
+                {children}
+              </ProvideCardsFilterContext>
             </main>
             <Footer />
           </ProvideUserContext>

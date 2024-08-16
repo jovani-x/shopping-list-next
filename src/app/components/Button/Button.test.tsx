@@ -17,11 +17,9 @@ describe.each([
   it("Rendered (custom classname and disabled)", () => {
     const customCls = "custom-class";
     const { container } = render(
-      <TagName
-        disabled={true}
-        extraClassname={customCls}
-        children={buttonText}
-      />
+      <TagName disabled={true} extraClassname={customCls}>
+        {buttonText}
+      </TagName>
     );
     const btnEl = container.querySelector("*");
     expect(btnEl).toBeInTheDocument();
@@ -31,7 +29,9 @@ describe.each([
 
   it.each(buttonTypes)("Rendered type %s (a - link)", (type) => {
     const { container } = render(
-      <TagName type={type} children={buttonText} href={"#"} />
+      <TagName type={type} href={"#"}>
+        {buttonText}
+      </TagName>
     );
     const btnEl = container.querySelector("*");
     expect(btnEl?.getAttribute("type")).toBeNull();
@@ -39,7 +39,7 @@ describe.each([
   });
 
   it.each(buttonTypes)("Rendered type %s (button)", (type) => {
-    const { container } = render(<TagName type={type} children={buttonText} />);
+    const { container } = render(<TagName type={type}>{buttonText}</TagName>);
     const btnEl = container.querySelector("*");
     expect(btnEl?.getAttribute("type")).toBe(type);
     expect(btnEl?.tagName.toLocaleLowerCase()).toBe("button");
@@ -50,7 +50,7 @@ describe.each([
     const user = userEvent.setup();
     const clickHandle = vi.fn().mockImplementation(() => testValue);
     const { container } = render(
-      <TagName onClick={clickHandle} children={buttonText} />
+      <TagName onClick={clickHandle}>{buttonText}</TagName>
     );
     const btnEl = container.querySelector("*");
 

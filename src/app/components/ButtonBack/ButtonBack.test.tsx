@@ -23,7 +23,7 @@ describe.each(Object.keys(ButtonComponentsType))("ButtonBack $name", (name) => {
 
   it("Rendered", () => {
     const { getByText } = render(
-      <ButtonBack btnComponentName={btnCompName} children={buttonText} />
+      <ButtonBack btnComponentName={btnCompName}>{buttonText}</ButtonBack>
     );
     const btnEl = getByText(buttonText);
     expect(btnEl).toBeInTheDocument();
@@ -35,11 +35,9 @@ describe.each(Object.keys(ButtonComponentsType))("ButtonBack $name", (name) => {
       .fn()
       .mockImplementation(() => `${testValue}: ${name}`);
     const { getByText } = render(
-      <ButtonBack
-        btnComponentName={btnCompName}
-        children={buttonText}
-        callback={callbackFn}
-      />
+      <ButtonBack btnComponentName={btnCompName} callback={callbackFn}>
+        {buttonText}
+      </ButtonBack>
     );
     const btnEl = getByText(buttonText);
     expect(btnEl).toBeInTheDocument();
@@ -54,11 +52,9 @@ describe.each(Object.keys(ButtonComponentsType))("ButtonBack $name", (name) => {
       .fn()
       .mockImplementation(() => `${testValue}: ${name}`);
     const { getByText } = render(
-      <ButtonBack
-        btnComponentName={btnCompName}
-        children={buttonText}
-        onClick={handleClick}
-      />
+      <ButtonBack btnComponentName={btnCompName} onClick={handleClick}>
+        {buttonText}
+      </ButtonBack>
     );
     const btnEl = getByText(buttonText);
     expect(btnEl).toBeInTheDocument();

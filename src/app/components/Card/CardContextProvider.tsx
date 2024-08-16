@@ -29,10 +29,13 @@ type CardContextType = CardState & CardActions;
 
 const CardContext = createContext<CardContextType | null>(null);
 
+export const cardContextErrorMessage =
+  "Wrap components with <CardContextProvider />";
+
 export const useCardContext = () => {
   const cardCtx = useContext(CardContext);
   if (!cardCtx) {
-    throw Error("Wrap components with <CardContextProvider />");
+    throw Error(cardContextErrorMessage);
   }
 
   return cardCtx;

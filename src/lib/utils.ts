@@ -1,4 +1,5 @@
 import { type ResponseCookie } from "next/dist/compiled/@edge-runtime/cookies";
+import { SelectedType } from "@/app/helpers/types";
 
 type ErrorWithMessage = {
   message: string;
@@ -72,3 +73,6 @@ export const getEnumTypeEntityByValue = ({
 
 export const transformEnumTypeValue = (value: string) =>
   value.toLocaleLowerCase().replace(/ /g, "-");
+
+export const getKeysByTrueValue = (entities: SelectedType) =>
+  Object.keys(entities).filter((key) => entities[key]);

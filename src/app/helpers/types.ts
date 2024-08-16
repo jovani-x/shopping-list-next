@@ -104,3 +104,7 @@ export interface IRequest {
     userName: string;
   };
 }
+
+export type SelectedType = {
+  [key: string]: boolean;
+};

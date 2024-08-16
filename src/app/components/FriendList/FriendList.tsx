@@ -6,14 +6,10 @@ import { useForm } from "react-hook-form";
 import Checkbox from "@/app/components/Checkbox/Checkbox";
 import { ButtonContrast, ButtonTypes } from "@/app/components/Button/Button";
 import { deleteFriends, deleteFriend } from "@/app/actions/client/friends";
-import { FriendType } from "@/app/helpers/types";
-import { getErrorMessage } from "@/lib/utils";
+import { FriendType, SelectedType } from "@/app/helpers/types";
+import { getErrorMessage, getKeysByTrueValue } from "@/lib/utils";
 import ErrorMessage from "@/app/components/ErrorMessage/ErrorMessage";
 import { initStreamListener } from "@/app/helpers/listener";
-
-type SelectedType = {
-  [key: string]: boolean;
-};
 
 const FriendList = ({
   friendsProps,
@@ -57,13 +53,8 @@ const FriendList = ({
 
   const canSave = isDirty && isValid;
 
-  const getUsersForDeleting = (users: SelectedType) =>
-    Object.entries(users)
-      .filter(([_key, value]: [_key: string, value: boolean]) => value)
-      .map(([key, _value]: [key: string, _value: boolean]) => key);
-
   const formAction = async (_formData: FormData) => {
-    const users = getUsersForDeleting(getValues());
+    const users = getKeysByTrueValue(getValues());
 
     try {
       if (users.length === 0) {

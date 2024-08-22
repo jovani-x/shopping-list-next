@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import Checkbox from "@/app/components/Checkbox/Checkbox";
@@ -9,7 +9,7 @@ import { deleteFriends, deleteFriend } from "@/app/actions/client/friends";
 import { FriendType, SelectedType } from "@/app/helpers/types";
 import { getErrorMessage, getKeysByTrueValue } from "@/lib/utils";
 import ErrorMessage from "@/app/components/ErrorMessage/ErrorMessage";
-import { initStreamListener } from "@/app/helpers/listener";
+import { useStreamListener } from "@/app/helpers/listener";
 
 const FriendList = ({
   friendsProps,
@@ -18,26 +18,18 @@ const FriendList = ({
 }) => {
   const { t } = useTranslation();
   const defaultChecked = false;
+  const friends = useStreamListener({
+    dataProps: friendsProps,
+    dataName: "friends",
+    eventName: "usersupdate",
+  }) as FriendType[];
   const defaultValues = useMemo(() => {
     const values = {} as SelectedType;
-    friendsProps?.map((fr) => (values[String(fr.id)] = defaultChecked));
+    friends?.map((fr) => (values[String(fr.id)] = defaultChecked));
     return values;
-  }, [friendsProps, defaultChecked]);
+  }, [friends, defaultChecked]);
+
   const [error, setError] = useState("");
-  const [friends, setFriends] = useState(friendsProps);
-  const refEvSource = useRef<EventSource | null>(null);
-
-  useEffect(
-    () =>
-      initStreamListener({
-        refEvSource,
-        setData: setFriends,
-        dataName: "friends",
-        eventName: "usersupdate",
-      }),
-    []
-  );
-
   const {
     reset,
     control,

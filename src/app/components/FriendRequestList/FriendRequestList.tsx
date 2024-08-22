@@ -5,16 +5,17 @@ import {
   declineFriendship,
 } from "@/app/actions/client/friends";
 import { IRequest } from "@/app/helpers/types";
-
-import { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import RequestItem from "@/app/components/RequestItem/RequestItem";
-import { initStreamListener } from "@/app/helpers/listener";
+import { useStreamListener } from "@/app/helpers/listener";
 
 const FriendRequestList = ({ requests }: { requests: IRequest[] }) => {
-  const [reqData, setReqData] = useState(requests);
-  const refEvSource = useRef<EventSource | null>(null);
   const { t } = useTranslation();
+  const reqData = useStreamListener({
+    dataProps: requests,
+    dataName: "requests",
+    eventName: "usersupdate",
+  }) as IRequest[];
 
   const renderedList =
     !reqData || !reqData?.length ? (
@@ -29,17 +30,6 @@ const FriendRequestList = ({ requests }: { requests: IRequest[] }) => {
         />
       ))
     );
-
-  useEffect(
-    () =>
-      initStreamListener({
-        refEvSource,
-        setData: setReqData,
-        dataName: "requests",
-        eventName: "usersupdate",
-      }),
-    []
-  );
 
   return <>{renderedList}</>;
 };

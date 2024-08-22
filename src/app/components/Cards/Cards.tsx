@@ -4,25 +4,16 @@ import Card, { ICard } from "@/app/components/Card/Card";
 import CardFilter from "@/app/components/CardFilter/CardFilter";
 import { useCardsFilterContext } from "@/app/components/ProvideCardsFilterContext/ProvideCardsFilterContext";
 import { useTranslation } from "react-i18next";
-import { useEffect, useRef, useState } from "react";
-import { initStreamListener } from "@/app/helpers/listener";
+import { useStreamListener } from "@/app/helpers/listener";
 
 const Cards = ({ cardsProps }: { cardsProps: ICard[] }) => {
   const { filterState, setFilterState } = useCardsFilterContext();
   const { t } = useTranslation();
-  const [cards, setCards] = useState(cardsProps);
-  const refEvSource = useRef<EventSource | null>(null);
-
-  useEffect(
-    () =>
-      initStreamListener({
-        refEvSource,
-        setData: setCards,
-        dataName: "cards",
-        eventName: "cardsupdate",
-      }),
-    []
-  );
+  const cards = useStreamListener({
+    dataProps: cardsProps,
+    dataName: "cards",
+    eventName: "cardsupdate",
+  }) as ICard[];
 
   const renderedCards =
     !cards || !cards.length

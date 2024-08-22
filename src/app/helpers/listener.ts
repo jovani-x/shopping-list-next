@@ -1,50 +1,54 @@
-import { MutableRefObject } from "react";
+import { useState, useEffect, useRef } from "react";
 
-export const initStreamListener = ({
-  refEvSource,
-  setData,
+export const useStreamListener = ({
+  dataProps,
   dataName,
   eventName,
   apiEndPoint = "/api/updates",
 }: {
-  refEvSource: MutableRefObject<EventSource | null>;
-  setData: (data: any) => void;
+  dataProps: unknown[] | null;
   dataName: string;
   eventName: string;
   apiEndPoint?: string;
 }) => {
-  const onGetData = (event: MessageEvent) => {
-    const data = JSON.parse(event.data);
-    setData(data[dataName]);
-  };
+  const [data, setData] = useState(dataProps);
+  const refEvSource = useRef<EventSource | null>(null);
 
-  const closeEvSource = () => {
-    if (
-      refEvSource?.current &&
-      refEvSource.current.readyState !== refEvSource.current.CLOSED
-    ) {
-      refEvSource.current.removeEventListener(eventName, onGetData);
-      refEvSource.current.removeEventListener("error", onError);
-      refEvSource.current.close();
-      refEvSource.current = null;
+  useEffect(() => {
+    const onGetData = (event: MessageEvent) => {
+      const parsedData = JSON.parse(event.data);
+      setData(parsedData[dataName]);
+    };
+
+    const closeEvSource = () => {
+      if (
+        refEvSource?.current &&
+        refEvSource.current.readyState !== refEvSource.current.CLOSED
+      ) {
+        refEvSource.current.removeEventListener(eventName, onGetData);
+        refEvSource.current.removeEventListener("error", onError);
+        refEvSource.current.close();
+        refEvSource.current = null;
+      }
+    };
+
+    function onError(_event: Event) {
+      closeEvSource();
     }
-  };
 
-  function onError(_event: Event) {
-    closeEvSource();
-  }
+    const run = async () => {
+      if (!refEvSource.current) {
+        const eventSource = new EventSource(apiEndPoint);
+        refEvSource.current = eventSource;
 
-  const run = async () => {
-    if (!refEvSource.current) {
-      const eventSource = new EventSource(apiEndPoint);
-      refEvSource.current = eventSource;
+        eventSource.addEventListener(eventName, onGetData);
+        eventSource.addEventListener("error", onError);
+      }
+    };
 
-      eventSource.addEventListener(eventName, onGetData);
-      eventSource.addEventListener("error", onError);
-    }
-  };
+    run();
+    return () => closeEvSource();
+  }, [apiEndPoint, eventName, dataName]);
 
-  run();
-
-  return () => closeEvSource();
+  return data;
 };

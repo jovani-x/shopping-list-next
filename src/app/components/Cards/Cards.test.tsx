@@ -4,12 +4,13 @@
 import { render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import Cards from "./Cards";
+import { ICard } from "@/components/Card/Card";
 import panelStyles from "@/components/Panel/panel.module.scss";
 import { getTestCard } from "@/tests/test-utils";
 
 const mocks = vi.hoisted(() => ({
   filterStr: "CardFilter",
-  initStreamListener: vi.fn(),
+  useStreamListener: vi.fn(),
   useCardsFilterContext: vi.fn().mockImplementation(() => ({
     filterState: { unfinished: true, done: true },
     setFilterState: vi.fn(),
@@ -17,7 +18,7 @@ const mocks = vi.hoisted(() => ({
 }));
 
 vi.mock("@/app/helpers/listener", () => ({
-  initStreamListener: mocks.initStreamListener,
+  useStreamListener: mocks.useStreamListener,
 }));
 
 vi.mock("@/components/CardFilter/CardFilter", () => ({
@@ -63,6 +64,7 @@ describe("Cards", () => {
 
   it("Rendered (one card only)", async () => {
     const cards = Array(1).fill(card);
+    mocks.useStreamListener.mockImplementationOnce(() => cards);
     const { getByText, queryByText } = render(<Cards cardsProps={cards} />);
 
     expect(getByText(mocks.filterStr)).toBeInTheDocument();
@@ -71,8 +73,10 @@ describe("Cards", () => {
   });
 
   it("Rendered (no cards)", () => {
+    const cards = [] as ICard[];
+    mocks.useStreamListener.mockImplementationOnce(() => cards);
     const { container, getByText, queryByText } = render(
-      <Cards cardsProps={[]} />
+      <Cards cardsProps={cards} />
     );
 
     expect(getByText(noCardsStr)).toBeInTheDocument();
@@ -82,6 +86,7 @@ describe("Cards", () => {
 
   it("Rendered (all)", async () => {
     const cards = [cardDone, cardUnfinished];
+    mocks.useStreamListener.mockImplementationOnce(() => cards);
     const { getByText, queryByText } = render(<Cards cardsProps={cards} />);
 
     expect(getByText(mocks.filterStr)).toBeInTheDocument();
@@ -96,6 +101,7 @@ describe("Cards", () => {
       setFilterState: vi.fn(),
     }));
     const cards = [cardDone, cardUnfinished];
+    mocks.useStreamListener.mockImplementationOnce(() => cards);
     const { getByText, queryByText } = render(<Cards cardsProps={cards} />);
 
     expect(getByText(mocks.filterStr)).toBeInTheDocument();
@@ -110,6 +116,7 @@ describe("Cards", () => {
       setFilterState: vi.fn(),
     }));
     const cards = [cardDone, cardUnfinished];
+    mocks.useStreamListener.mockImplementationOnce(() => cards);
     const { getByText, queryByText } = render(<Cards cardsProps={cards} />);
 
     expect(getByText(mocks.filterStr)).toBeInTheDocument();
@@ -124,6 +131,7 @@ describe("Cards", () => {
       setFilterState: vi.fn(),
     }));
     const cards = [cardDone, cardUnfinished];
+    mocks.useStreamListener.mockImplementationOnce(() => cards);
     const { getByText, queryByText } = render(<Cards cardsProps={cards} />);
 
     expect(getByText(mocks.filterStr)).toBeInTheDocument();

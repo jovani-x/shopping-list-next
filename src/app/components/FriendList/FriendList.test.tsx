@@ -5,16 +5,17 @@ import { render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import FriendList from "./FriendList";
 import { getTestUser } from "@/tests/test-utils";
+import { FriendType } from "@/app/helpers/types";
 
 const mocks = vi.hoisted(() => ({
-  initStreamListener: vi.fn(),
+  useStreamListener: vi.fn(),
   deleteFriends: vi.fn(),
   deleteFriend: vi.fn(),
   checkboxStr: "Test checkbox",
 }));
 
 vi.mock("@/app/helpers/listener", () => ({
-  initStreamListener: mocks.initStreamListener,
+  useStreamListener: mocks.useStreamListener,
 }));
 
 vi.mock("@/app/actions/client/friends", () => ({
@@ -38,8 +39,10 @@ describe("FriendList", () => {
 
   it("Rendered", () => {
     const { id, userName, cards } = getTestUser();
+    const testFriends = [{ id, userName, cards }];
+    mocks.useStreamListener.mockImplementation(() => testFriends);
     const { queryByText, getByText } = render(
-      <FriendList friendsProps={[{ id, userName, cards }]} />
+      <FriendList friendsProps={testFriends} />
     );
 
     expect(getByText(mocks.checkboxStr)).toBeInTheDocument();
@@ -48,7 +51,11 @@ describe("FriendList", () => {
   });
 
   it("Rendered (empty)", () => {
-    const { queryByText, getByText } = render(<FriendList friendsProps={[]} />);
+    const testFriends = [] as FriendType[];
+    mocks.useStreamListener.mockImplementation(() => testFriends);
+    const { queryByText, getByText } = render(
+      <FriendList friendsProps={testFriends} />
+    );
 
     expect(getByText(emptyStr)).toBeInTheDocument();
     expect(queryByText(mocks.checkboxStr)).toBeNull();

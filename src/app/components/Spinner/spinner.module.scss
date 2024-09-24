@@ -1,0 +1,16 @@
+.spinner {
+  @apply z-40 -inset-2 min-w-4 min-h-4;
+}
+
+.spinnerBg {
+  @apply absolute inset-0 -z-10;
+}
+
+.spinnerItem {
+  @apply absolute inset-0 m-auto w-4 h-4 rounded-full bg-sky-500 animate-spin;
+
+  &::before {
+    content: "";
+    @apply absolute top-0.5 left-0.5 w-1 h-1 bg-white rounded-full;
+  }
+}

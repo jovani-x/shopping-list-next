@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useFormStatus } from "react-dom";
 import cardFormStyles from "./cardForm.module.scss";
+import authFormStyles from "@/app/assets/styles/authForm.module.scss";
 import Button, {
   ButtonContrast,
   ButtonTypes,
@@ -13,7 +15,12 @@ import TextControl, {
 // import FileControl, {
 //   FileControlProps,
 // } from '../../components/FileControl/FileControl'
-import { useForm, useFieldArray } from "react-hook-form";
+import {
+  useForm,
+  useFieldArray,
+  FormProvider,
+  useFormContext,
+} from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { FormValues } from "@/app/helpers/types";
 import { nanoid } from "nanoid";
@@ -23,6 +30,7 @@ import { useTranslation } from "react-i18next";
 import { ICard } from "@/app/components/Card/Card";
 import { getErrorMessage } from "@/lib/utils";
 import { refreshPagesCache } from "@/app/helpers/utils-common";
+import Spinner from "@/components/Spinner/Spinner";
 
 const CardForm = ({
   mutationFunc,
@@ -33,7 +41,6 @@ const CardForm = ({
 }) => {
   const isEditForm = !!card;
   const router = useRouter();
-  const FORM_ARR_NAME = "productsList";
   const { t } = useTranslation();
   const defaultValues = useMemo(
     () => ({
@@ -44,15 +51,80 @@ const CardForm = ({
     [card]
   );
 
+  const formProps = useForm<FormValues>({
+    defaultValues,
+  });
+  const { getValues } = formProps;
+
+  const onSaveCard = async (data: FormValues) => {
+    const formData = {
+      id: card?.id ?? "",
+      name: data.cardTitle,
+      notes: data.cardNotes,
+      products: data.productsList,
+      isDone: data?.isDone || false,
+      status: {
+        value: "free",
+        userName: "",
+      },
+    };
+
+    try {
+      const res = await mutationFunc(formData);
+      console.log(res);
+
+      if (!res?.card) {
+        console.log("mutationFunc failed");
+      } else {
+        console.log("mutationFunc success");
+        router.back();
+      }
+    } catch (err) {
+      console.log("Saving failed", getErrorMessage(err));
+    }
+  };
+
+  const formTitle = (isEditForm: boolean): string => {
+    return isEditForm
+      ? `${t("editCard")}: ${card?.name ?? ""}`
+      : t("createCard");
+  };
+
+  useEffect(() => {
+    return () => refreshPagesCache(["/", `/${card?.id}`]);
+  }, [card?.id]);
+
+  const formAction = async () => {
+    const data = getValues();
+    try {
+      await onSaveCard(data);
+    } catch (err) {
+      console.log("err", getErrorMessage(err));
+    }
+  };
+
+  return (
+    <>
+      <h1 className={cardFormStyles.title}>{formTitle(isEditForm)}</h1>
+      <FormProvider {...formProps}>
+        <form action={formAction}>
+          <CardFormChildren />
+        </form>
+      </FormProvider>
+    </>
+  );
+};
+
+const CardFormChildren = () => {
+  const FORM_ARR_NAME = "productsList";
+  const { t } = useTranslation();
+  const { pending } = useFormStatus();
   const {
     register,
     control,
     getFieldState,
     formState: { isValid, isDirty },
-    getValues,
-  } = useForm<FormValues>({
-    defaultValues,
-  });
+  } = useFormContext();
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -149,32 +221,6 @@ const CardForm = ({
   });
 
   const canSave = isDirty && isValid;
-  const onSaveCard = async (data: FormValues) => {
-    const formData = {
-      id: card?.id ?? "",
-      name: data.cardTitle,
-      notes: data.cardNotes,
-      products: data.productsList,
-      isDone: data?.isDone || false,
-      status: {
-        value: "free",
-        userName: "",
-      },
-    };
-
-    try {
-      const res = await mutationFunc(formData);
-
-      if (!res?.card) {
-        console.log("mutationFunc failed");
-      } else {
-        console.log("mutationFunc success");
-        router.back();
-      }
-    } catch (err) {
-      console.log("Saving failed", getErrorMessage(err));
-    }
-  };
 
   const emptyProduct: Product = {
     id: nanoid(),
@@ -184,46 +230,30 @@ const CardForm = ({
     got: false,
   };
 
-  const formTitle = (isEditForm: boolean): string => {
-    return isEditForm
-      ? `${t("editCard")}: ${card?.name ?? ""}`
-      : t("createCard");
-  };
-
-  useEffect(() => {
-    return () => refreshPagesCache(["/", `/${card?.id}`]);
-  }, [card?.id]);
-
-  const formAction = async () => {
-    const data = getValues();
-    try {
-      await onSaveCard(data);
-    } catch (err) {
-      console.log("err", getErrorMessage(err));
-    }
-  };
-
   return (
     <>
-      <h1 className={cardFormStyles.title}>{formTitle(isEditForm)}</h1>
-      <form action={formAction}>
-        <TextControl controlProps={cardTitleProps} register={register} />
-        <TextControl controlProps={cardNotesProps} register={register} />
-        {renderedProductListForms}
-        <div className={cardFormStyles.btnHolder}>
-          <Button
-            onClick={() => {
-              append(emptyProduct);
-              setIsTooltipShown([...isTooltipShown, false]);
-            }}
-          >
-            {t("addProduct")}
-          </Button>
-          <ButtonContrast type={ButtonTypes.SUBMIT} disabled={!canSave}>
-            {t("saveCard")}
-          </ButtonContrast>
-        </div>
-      </form>
+      <TextControl controlProps={cardTitleProps} register={register} />
+      <TextControl controlProps={cardNotesProps} register={register} />
+      {renderedProductListForms}
+      <div
+        className={`${cardFormStyles.btnHolder} ${authFormStyles.formWithCenteredSpinner}`}
+      >
+        <Button
+          onClick={() => {
+            append(emptyProduct);
+            setIsTooltipShown([...isTooltipShown, false]);
+          }}
+        >
+          {t("addProduct")}
+        </Button>
+        <ButtonContrast
+          type={ButtonTypes.SUBMIT}
+          disabled={!canSave && pending}
+        >
+          {t("saveCard")}
+        </ButtonContrast>
+        {pending && <Spinner />}
+      </div>
     </>
   );
 };

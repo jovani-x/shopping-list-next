@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useFormStatus } from "react-dom";
 import { useForm } from "react-hook-form";
 import TextControl from "@/app/components/TextControl/TextControl";
 import { useUserNameProps, usePasswordProps } from "@/app/helpers/forms";
@@ -13,24 +14,12 @@ import { useTranslation } from "react-i18next";
 import { login } from "@/app/actions/client/auth";
 import { useRouter } from "next/navigation";
 import { getErrorMessage } from "@/lib/utils";
+import Spinner from "@/components/Spinner/Spinner";
 
 const LoginForm = () => {
   const { t } = useTranslation();
   const router = useRouter();
   const [error, setError] = useState("");
-
-  const {
-    register,
-    getFieldState,
-    formState: { isValid, isDirty },
-  } = useForm<ILoginValues>({
-    defaultValues: {
-      userName: "",
-      password: "",
-    },
-  });
-
-  const canSave = isDirty && isValid;
 
   const formAction = async (formData: FormData) => {
     try {
@@ -49,20 +38,11 @@ const LoginForm = () => {
 
   return (
     <>
-      <form action={formAction}>
-        <TextControl
-          controlProps={{ ...useUserNameProps(), fieldState: getFieldState }}
-          register={register}
-        />
-        <TextControl
-          controlProps={{ ...usePasswordProps(), fieldState: getFieldState }}
-          register={register}
-        />
-        <div className={authFormStyles.btnHolder}>
-          <ButtonContrast type={ButtonTypes.SUBMIT} disabled={!canSave}>
-            {t("login")}
-          </ButtonContrast>
-        </div>
+      <form
+        action={formAction}
+        className={authFormStyles.formWithCenteredSpinner}
+      >
+        <LoginFormChildren />
       </form>
       {error && <ErrorMessage text={error} />}
       <p className={authFormStyles.linkHolder}>
@@ -70,6 +50,46 @@ const LoginForm = () => {
         {` ${t("or")} `}
         <Link href="/forget-password">{t("forgetPassword")}</Link>
       </p>
+    </>
+  );
+};
+
+const LoginFormChildren = () => {
+  const { t } = useTranslation();
+  const { pending } = useFormStatus();
+
+  const {
+    register,
+    getFieldState,
+    formState: { isValid, isDirty },
+  } = useForm<ILoginValues>({
+    defaultValues: {
+      userName: "",
+      password: "",
+    },
+  });
+
+  const canSave = isDirty && isValid;
+
+  return (
+    <>
+      <TextControl
+        controlProps={{ ...useUserNameProps(), fieldState: getFieldState }}
+        register={register}
+      />
+      <TextControl
+        controlProps={{ ...usePasswordProps(), fieldState: getFieldState }}
+        register={register}
+      />
+      <div className={authFormStyles.btnHolder}>
+        <ButtonContrast
+          type={ButtonTypes.SUBMIT}
+          disabled={!canSave && pending}
+        >
+          {t("login")}
+        </ButtonContrast>
+      </div>
+      {pending && <Spinner />}
     </>
   );
 };

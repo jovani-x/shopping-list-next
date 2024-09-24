@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useFormStatus } from "react-dom";
 import { useForm } from "react-hook-form";
 import TextControl from "@/app/components/TextControl/TextControl";
 import {
@@ -18,26 +19,12 @@ import ErrorMessage from "@/app/components/ErrorMessage/ErrorMessage";
 import { getErrorMessage } from "@/lib/utils";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
+import Spinner from "@/app/components/Spinner/Spinner";
 
 const RegisterForm = () => {
   const { t } = useTranslation();
   const router = useRouter();
   const [error, setError] = useState("");
-
-  const {
-    register,
-    getFieldState,
-    formState: { isValid, isDirty },
-  } = useForm<IRegisterValues>({
-    defaultValues: {
-      userName: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-    },
-  });
-
-  const canSave = isDirty && isValid;
 
   const formAction = async (formData: FormData) => {
     try {
@@ -56,37 +43,11 @@ const RegisterForm = () => {
 
   return (
     <>
-      <form action={formAction}>
-        <TextControl
-          controlProps={{
-            ...useUserNameProps(),
-            fieldState: getFieldState,
-          }}
-          register={register}
-        />
-        <TextControl
-          controlProps={{ ...useEmailProps(), fieldState: getFieldState }}
-          register={register}
-        />
-        <TextControl
-          controlProps={{
-            ...usePasswordProps(),
-            fieldState: getFieldState,
-          }}
-          register={register}
-        />
-        <TextControl
-          controlProps={{
-            ...useConfirmPasswordProps(),
-            fieldState: getFieldState,
-          }}
-          register={register}
-        />
-        <div className={authFormStyles.btnHolder}>
-          <ButtonContrast type={ButtonTypes.SUBMIT} disabled={!canSave}>
-            {t("createAccount")}
-          </ButtonContrast>
-        </div>
+      <form
+        action={formAction}
+        className={authFormStyles.formWithCenteredSpinner}
+      >
+        <RegisterFormChildren />
       </form>
       {error && <ErrorMessage text={error} />}
       <p className={authFormStyles.linkHolder}>
@@ -94,6 +55,65 @@ const RegisterForm = () => {
         {` ${t("or")} `}
         <Link href="/forget-password">{t("forgetPassword")}</Link>
       </p>
+    </>
+  );
+};
+
+const RegisterFormChildren = () => {
+  const { t } = useTranslation();
+  const { pending } = useFormStatus();
+
+  const {
+    register,
+    getFieldState,
+    formState: { isValid, isDirty },
+  } = useForm<IRegisterValues>({
+    defaultValues: {
+      userName: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+  });
+
+  const canSave = isDirty && isValid;
+
+  return (
+    <>
+      <TextControl
+        controlProps={{
+          ...useUserNameProps(),
+          fieldState: getFieldState,
+        }}
+        register={register}
+      />
+      <TextControl
+        controlProps={{ ...useEmailProps(), fieldState: getFieldState }}
+        register={register}
+      />
+      <TextControl
+        controlProps={{
+          ...usePasswordProps(),
+          fieldState: getFieldState,
+        }}
+        register={register}
+      />
+      <TextControl
+        controlProps={{
+          ...useConfirmPasswordProps(),
+          fieldState: getFieldState,
+        }}
+        register={register}
+      />
+      <div className={authFormStyles.btnHolder}>
+        <ButtonContrast
+          type={ButtonTypes.SUBMIT}
+          disabled={!canSave && pending}
+        >
+          {t("createAccount")}
+        </ButtonContrast>
+      </div>
+      {pending && <Spinner />}
     </>
   );
 };

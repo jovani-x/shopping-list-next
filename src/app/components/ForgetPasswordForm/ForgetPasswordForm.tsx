@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useFormStatus } from "react-dom";
 import { useForm } from "react-hook-form";
 import { IForgetValues } from "@/app/helpers/types";
 import { forgetPassword } from "@/app/actions/client/auth";
@@ -12,22 +13,11 @@ import { useEmailProps } from "@/app/helpers/forms";
 import authFormStyles from "@/app/assets/styles/authForm.module.scss";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
+import Spinner from "@/components/Spinner/Spinner";
 
 const ForgetPasswordForm = () => {
   const { t } = useTranslation();
   const [error, setError] = useState("");
-
-  const {
-    register,
-    getFieldState,
-    formState: { isValid, isDirty },
-  } = useForm<IForgetValues>({
-    defaultValues: {
-      email: "",
-    },
-  });
-
-  const canSave = isDirty && isValid;
 
   const formAction = async (formData: FormData) => {
     try {
@@ -45,16 +35,11 @@ const ForgetPasswordForm = () => {
 
   return (
     <>
-      <form action={formAction}>
-        <TextControl
-          controlProps={{ ...useEmailProps(), fieldState: getFieldState }}
-          register={register}
-        />
-        <div className={authFormStyles.btnHolder}>
-          <ButtonContrast type={ButtonTypes.SUBMIT} disabled={!canSave}>
-            {t("restoreAccess")}
-          </ButtonContrast>
-        </div>
+      <form
+        action={formAction}
+        className={authFormStyles.formWithCenteredSpinner}
+      >
+        <ForgetPasswordFormChildren />
       </form>
       {error && <ErrorMessage text={error} />}
       <p className={authFormStyles.linkHolder}>
@@ -62,6 +47,38 @@ const ForgetPasswordForm = () => {
         {` ${t("or")} `}
         <Link href="/register">{t("createAccount")}</Link>
       </p>
+    </>
+  );
+};
+
+const ForgetPasswordFormChildren = () => {
+  const { t } = useTranslation();
+  const { pending } = useFormStatus();
+
+  const {
+    register,
+    getFieldState,
+    formState: { isValid, isDirty },
+  } = useForm<IForgetValues>({
+    defaultValues: {
+      email: "",
+    },
+  });
+
+  const canSave = isDirty && isValid;
+
+  return (
+    <>
+      <TextControl
+        controlProps={{ ...useEmailProps(), fieldState: getFieldState }}
+        register={register}
+      />
+      <div className={authFormStyles.btnHolder}>
+        <ButtonContrast type={ButtonTypes.SUBMIT} disabled={!canSave}>
+          {t("restoreAccess")}
+        </ButtonContrast>
+      </div>
+      {pending && <Spinner />}
     </>
   );
 };

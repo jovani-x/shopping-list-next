@@ -41,3 +41,5 @@ package-lock.json
 TO-DO.md
 
 certificates
+
+!.env.example

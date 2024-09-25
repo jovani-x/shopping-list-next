@@ -2,11 +2,15 @@
  * @vitest-environment jsdom
  */
 import { render } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi, afterEach } from "vitest";
 import userEvent from "@testing-library/user-event";
 import RegisterForm from "./RegisterForm";
 
-const mocks = vi.hoisted(() => ({ push: vi.fn(), registerUser: vi.fn() }));
+const mocks = vi.hoisted(() => ({
+  push: vi.fn(),
+  registerUser: vi.fn(),
+  pending: false,
+}));
 
 vi.mock("next/navigation", () => ({
   useRouter() {
@@ -23,6 +27,20 @@ vi.mock("react-i18next", () => ({
     t: vi.fn().mockImplementation((key: string) => key),
   })),
 }));
+
+vi.mock("react-dom", async (importOriginal) => {
+  const orig: object = await importOriginal();
+  return {
+    ...orig,
+    useFormStatus: vi.fn().mockImplementation(() => ({
+      pending: mocks.pending,
+    })),
+  };
+});
+
+afterEach(() => {
+  mocks.pending = false;
+});
 
 describe("Register form", () => {
   const btnStr = "createAccount";
@@ -74,6 +92,22 @@ describe("Register form", () => {
       expect(getByLabelText(name)).toHaveDisplayValue(value);
     });
     expect(getByText(btnStr)).not.toBeDisabled();
+  });
+
+  it("Fill form (pending)", async () => {
+    mocks.pending = true;
+    const user = userEvent.setup();
+    const { getByLabelText, getByText } = render(<RegisterForm />);
+
+    for (const { name, value } of inputEntArr) {
+      const inputEl = getByLabelText(name);
+      await user.type(inputEl, value);
+    }
+    inputEntArr.map(({ name, value }) => {
+      expect(getByLabelText(name)).toHaveDisplayValue(value);
+    });
+    // due to pending
+    expect(getByText(btnStr)).toBeDisabled();
   });
 
   it.todo("Submit form (success)");

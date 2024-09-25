@@ -76,7 +76,7 @@ const RegisterFormChildren = () => {
     },
   });
 
-  const canSave = isDirty && isValid;
+  const canSave = isDirty && isValid && !pending;
 
   return (
     <>
@@ -106,10 +106,7 @@ const RegisterFormChildren = () => {
         register={register}
       />
       <div className={authFormStyles.btnHolder}>
-        <ButtonContrast
-          type={ButtonTypes.SUBMIT}
-          disabled={!canSave && pending}
-        >
+        <ButtonContrast type={ButtonTypes.SUBMIT} disabled={!canSave}>
           {t("createAccount")}
         </ButtonContrast>
       </div>

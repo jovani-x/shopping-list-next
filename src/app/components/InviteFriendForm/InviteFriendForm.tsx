@@ -51,7 +51,7 @@ const InviteFriendFormChildren = () => {
     },
   });
 
-  const canSave = isDirty && isValid;
+  const canSave = isDirty && isValid && !pending;
 
   return (
     <>
@@ -72,7 +72,7 @@ const InviteFriendFormChildren = () => {
         register={register}
       />
       <div className={authFormStyles.btnHolder}>
-        <Button type={ButtonTypes.SUBMIT} disabled={!canSave && pending}>
+        <Button type={ButtonTypes.SUBMIT} disabled={!canSave}>
           {t("invite")}
         </Button>
       </div>

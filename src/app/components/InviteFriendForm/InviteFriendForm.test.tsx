@@ -2,11 +2,14 @@
  * @vitest-environment jsdom
  */
 import { render } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi, afterEach } from "vitest";
 import userEvent from "@testing-library/user-event";
 import InviteFriendForm from "./InviteFriendForm";
 
-const mocks = vi.hoisted(() => ({ inviteFriendViaEmail: vi.fn() }));
+const mocks = vi.hoisted(() => ({
+  inviteFriendViaEmail: vi.fn(),
+  pending: false,
+}));
 
 vi.mock("@/app/helpers/actions", () => ({
   inviteFriendViaEmail: mocks.inviteFriendViaEmail,
@@ -17,6 +20,20 @@ vi.mock("react-i18next", () => ({
     t: vi.fn().mockImplementation((key: string) => key),
   })),
 }));
+
+vi.mock("react-dom", async (importOriginal) => {
+  const orig: object = await importOriginal();
+  return {
+    ...orig,
+    useFormStatus: vi.fn().mockImplementation(() => ({
+      pending: mocks.pending,
+    })),
+  };
+});
+
+afterEach(() => {
+  mocks.pending = false;
+});
 
 describe("InviteFriendForm", () => {
   const btnStr = "invite";
@@ -71,6 +88,20 @@ describe("InviteFriendForm", () => {
       expect(inputEl).toHaveDisplayValue(value);
     }
     expect(getByText(btnStr)).not.toBeDisabled();
+  });
+
+  it("Fill form (pending)", async () => {
+    mocks.pending = true;
+    const user = userEvent.setup();
+    const { getByText, getByLabelText } = render(<InviteFriendForm />);
+
+    for (const { value, name } of inputEntArr) {
+      const inputEl = getByLabelText(name);
+      await user.type(inputEl, value);
+      expect(inputEl).toHaveDisplayValue(value);
+    }
+    // due to pending
+    expect(getByText(btnStr)).toBeDisabled();
   });
 
   it.todo("Submit form (success)");

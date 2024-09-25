@@ -2,13 +2,14 @@
  * @vitest-environment jsdom
  */
 import { render } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi, afterEach } from "vitest";
 import userEvent from "@testing-library/user-event";
 import LoginForm from "./LoginForm";
 
 const mocks = vi.hoisted(() => ({
   back: vi.fn(),
   authenticate: vi.fn(),
+  pending: false,
 }));
 
 vi.mock("next/navigation", () => ({
@@ -26,6 +27,20 @@ vi.mock("react-i18next", () => ({
     t: vi.fn().mockImplementation((key: string) => key),
   })),
 }));
+
+vi.mock("react-dom", async (importOriginal) => {
+  const orig: object = await importOriginal();
+  return {
+    ...orig,
+    useFormStatus: vi.fn().mockImplementation(() => ({
+      pending: mocks.pending,
+    })),
+  };
+});
+
+afterEach(() => {
+  mocks.pending = false;
+});
 
 describe("Login form", () => {
   it("Rendered", () => {
@@ -72,6 +87,20 @@ describe("Login form", () => {
     await user.type(passInput, "pass12345");
     const btn = getByText("login");
     expect(btn).not.toBeDisabled();
+  });
+
+  it("Fill form (pending)", async () => {
+    mocks.pending = true;
+    const user = userEvent.setup();
+    const { getByText, getByLabelText } = render(<LoginForm />);
+
+    const nameInput = getByLabelText("userName");
+    await user.type(nameInput, "Test Username");
+    const passInput = getByLabelText("password");
+    await user.type(passInput, "pass12345");
+    const btn = getByText("login");
+    // due to pending
+    expect(btn).toBeDisabled();
   });
 
   it.todo("Submit form (success)");

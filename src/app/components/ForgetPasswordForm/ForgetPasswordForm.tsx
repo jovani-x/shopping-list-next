@@ -65,7 +65,7 @@ const ForgetPasswordFormChildren = () => {
     },
   });
 
-  const canSave = isDirty && isValid;
+  const canSave = isDirty && isValid && !pending;
 
   return (
     <>

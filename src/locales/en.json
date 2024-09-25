@@ -70,5 +70,6 @@
   "message": "Message",
   "deleteSelected": "Delete Selected",
   "isEditing": "is editing",
-  "isShopping": "is shopping"
+  "isShopping": "is shopping",
+  "tryAgain": "Try again"
 }

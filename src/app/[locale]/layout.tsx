@@ -10,6 +10,13 @@ import Menu from "@/app/components/Menu/Menu";
 import ProvideCardsFilterContext from "@/app/components/ProvideCardsFilterContext/ProvideCardsFilterContext";
 import ProvideUserContext from "@/app/components/ProvideUserContext/ProvideUserContext";
 import { getCurrentUser, getAuthToken } from "@/app/helpers/auth";
+import { Suspense } from "react";
+import Loading from "./loading";
+import { ErrorBoundary } from "react-error-boundary";
+import YCenteredBlock from "@/app/components/YCenteredBlock/YCenteredBlock";
+
+export const revalidate = 0;
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Shopping List App",
@@ -24,7 +31,7 @@ export default async function RootLayout({
   params: { locale: string };
 }>) {
   const i18nNamespaces = [defaultNamespace];
-  const { resources } = await initTranslations(locale, i18nNamespaces);
+  const { resources, t } = await initTranslations(locale, i18nNamespaces);
   const user = await getCurrentUser(await getAuthToken());
 
   return (
@@ -44,7 +51,17 @@ export default async function RootLayout({
               <ProvideCardsFilterContext
                 value={{ filterState: { unfinished: true, done: true } }}
               >
-                {children}
+                <ErrorBoundary
+                  fallback={
+                    <YCenteredBlock>
+                      <h1 className="text-center">
+                        {t("sorrySomethingWentWrongTryAgain")}
+                      </h1>
+                    </YCenteredBlock>
+                  }
+                >
+                  <Suspense fallback={<Loading />}>{children}</Suspense>
+                </ErrorBoundary>
               </ProvideCardsFilterContext>
             </main>
             <Footer />

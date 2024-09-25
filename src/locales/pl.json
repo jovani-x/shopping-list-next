@@ -70,5 +70,6 @@
   "message": "Wiadomość",
   "deleteSelected": "Usuń wybrane",
   "isEditing": "redaguje",
-  "isShopping": "robi zakupy"
+  "isShopping": "robi zakupy",
+  "tryAgain": "Spróbuj ponownie"
 }

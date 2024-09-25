@@ -220,7 +220,7 @@ const CardFormChildren = () => {
     );
   });
 
-  const canSave = isDirty && isValid;
+  const canSave = isDirty && isValid && !pending;
 
   const emptyProduct: Product = {
     id: nanoid(),
@@ -246,10 +246,7 @@ const CardFormChildren = () => {
         >
           {t("addProduct")}
         </Button>
-        <ButtonContrast
-          type={ButtonTypes.SUBMIT}
-          disabled={!canSave && pending}
-        >
+        <ButtonContrast type={ButtonTypes.SUBMIT} disabled={!canSave}>
           {t("saveCard")}
         </ButtonContrast>
         {pending && <Spinner />}

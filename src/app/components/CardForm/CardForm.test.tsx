@@ -2,7 +2,7 @@
  * @vitest-environment jsdom
  */
 import { render, waitFor } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi, afterEach } from "vitest";
 import CardForm from "./CardForm";
 import cardFormStyles from "./CardForm.module.scss";
 import { ICard } from "@/components/Card/Card";
@@ -12,6 +12,7 @@ import stylesConfirmation from "@/components/Confirmation/confirmation.module.sc
 
 const mocks = vi.hoisted(() => ({
   confirmStr: "Test confirmation",
+  pending: false,
 }));
 
 vi.mock("next/navigation", () => ({
@@ -33,6 +34,20 @@ vi.mock("react-i18next", () => ({
     t: vi.fn().mockImplementation((key: string) => key),
   })),
 }));
+
+vi.mock("react-dom", async (importOriginal) => {
+  const orig: object = await importOriginal();
+  return {
+    ...orig,
+    useFormStatus: vi.fn().mockImplementation(() => ({
+      pending: mocks.pending,
+    })),
+  };
+});
+
+afterEach(() => {
+  mocks.pending = false;
+});
 
 describe("Card Form", () => {
   const card = getTestCard();
@@ -104,6 +119,12 @@ describe("Card Form", () => {
   });
 
   it("Toggle 'delete confirmation tooltip'", async () => {
+    vi.mock("@/app/components/Confirmation/Confirmation", async () => {
+      const orig: object = await vi.importActual(
+        "@/app/components/Confirmation/Confirmation"
+      );
+      return { ...orig };
+    });
     const user = userEvent.setup();
     const { container, getByText, getAllByLabelText } = render(
       <CardForm mutationFunc={handleFn} card={card} />
@@ -117,21 +138,26 @@ describe("Card Form", () => {
     expect(btnEl).toBeInTheDocument();
     if (btnEl) {
       await user.click(btnEl);
-      waitFor(async () => {
-        expect(container.querySelector(tooltipSel)).toBeInTheDocument();
-        const noBtn = getByText("no");
-        const yesBtn = getByText("yes");
-        expect(noBtn).toBeInTheDocument();
-        expect(yesBtn).toBeInTheDocument();
-        await user.click(noBtn);
-        expect(container.querySelector(tooltipSel)).toBeNull();
-
-        await user.click(btnEl);
-        await user.click(yesBtn);
-        expect(getAllByLabelText("productTitle*", { selector: "input" })).toBe(
-          card.products.length - 1
-        );
+      const tooltipEl = await waitFor(() => {
+        const el = container.querySelector(tooltipSel);
+        if (!el) {
+          throw new Error("Tooltip element doesn't exist");
+        }
+        return el;
       });
+      expect(tooltipEl).toBeInTheDocument();
+      const noBtn = getByText("no");
+      const yesBtn = getByText("yes");
+      expect(noBtn).toBeInTheDocument();
+      expect(yesBtn).toBeInTheDocument();
+      await user.click(noBtn);
+      expect(container.querySelector(tooltipSel)).toBeNull();
+
+      await user.click(btnEl);
+      await user.click(yesBtn);
+      expect(
+        getAllByLabelText("productTitle*", { selector: "input" }).length
+      ).toBe(card.products.length);
     }
   });
 
@@ -166,5 +192,38 @@ describe("Card Form", () => {
     expect(btnSave).not.toBeDisabled();
     // await user.click(btnSave);
     // expect(saveFn).toBeCalled();
+  });
+
+  it("Click 'Add a product' (pending)", async () => {
+    mocks.pending = true;
+    const user = userEvent.setup();
+    const saveFn = vi.fn();
+    const { container, getByText, getByLabelText } = render(
+      <CardForm mutationFunc={saveFn} />
+    );
+
+    const btnAdd = getByText(addStr);
+    const groupSel = `.${cardFormStyles.group}`;
+    expect(container.querySelectorAll(groupSel)).toHaveLength(0);
+
+    await user.click(btnAdd);
+    expect(container.querySelectorAll(groupSel)).toHaveLength(1);
+
+    const btnSave = getByText(saveStr);
+    expect(btnSave).toBeDisabled();
+
+    const cardTitleInput = getByLabelText(titleStr);
+    await user.type(cardTitleInput, "Test card title");
+
+    const groups = container.querySelectorAll(groupSel);
+    const lastGroup = groups[groups.length - 1];
+    const inputEl = lastGroup.querySelector("input");
+    expect(inputEl).toBeInTheDocument();
+    if (inputEl) {
+      await user.type(inputEl, "test product name");
+      expect(inputEl).toHaveDisplayValue("test product name");
+    }
+    // due to pending
+    expect(btnSave).toBeDisabled();
   });
 });

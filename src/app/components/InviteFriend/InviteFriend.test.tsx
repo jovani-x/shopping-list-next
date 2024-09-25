@@ -12,6 +12,16 @@ vi.mock("react-i18next", () => ({
   })),
 }));
 
+vi.mock("react-dom", async (importOriginal) => {
+  const orig: object = await importOriginal();
+  return {
+    ...orig,
+    useFormStatus: vi.fn().mockImplementation(() => ({
+      pending: false,
+    })),
+  };
+});
+
 describe("InviteFriend", () => {
   it("Rendered", async () => {
     const user = userEvent.setup();

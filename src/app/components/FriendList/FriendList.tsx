@@ -51,7 +51,7 @@ const FriendList = ({
     try {
       if (users.length === 0) {
         setError(getErrorMessage(t("wrongData")));
-      } else if (users.length === 1) {
+      } else {
         const result =
           users.length === 1
             ? await deleteFriend({ friendId: users[0] })
